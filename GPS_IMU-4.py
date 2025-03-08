@@ -8,42 +8,24 @@ import gpsd
 import time
 import struct
 import serial
+import argparse
 import datetime
 import threading
 import numpy as np
 
-# Configure the serial connection
-gps_port = "/dev/ttyACM0"
-imu_port = "/dev/ttyUSB0"
-baud_rate = 115200
-
-# Data structure template
-template = {
-    "time": None,
-    "accel_X": None,
-    "accel_Y": None,
-    "accel_Z": None,
-    "gyro_X": None,
-    "gyro_Y": None,
-    "gyro_Z": None,
-    "roll": None,
-    "pitch": None,
-    "original_yaw": None,
-    "yaw": None,
-}
-
-
 class IMUData:
-    def __init__(self):
+    def __init__(self, imu_port="/dev/ttyUSB0", baud_rate=115200):
         self.serial = None
         self.running = False
         self.timer = None
+        self.imu_port = imu_port
+        self.baud_rate = baud_rate
         self.current_data = template.copy()  # Holds incomplete packet
         self.last_data = template.copy()  # Holds the last complete packet
 
     def start(self):
         """Start reading from the IMU"""
-        self.serial = serial.Serial(imu_port, baud_rate, timeout=1)
+        self.serial = serial.Serial(self.imu_port, self.baud_rate, timeout=1)
         self.running = True
         self.schedule_update()
 
@@ -125,7 +107,27 @@ class IMUData:
             self.schedule_update()
 
 
-def main():
+# Data structure template
+template = {
+    "time": None,
+    "accel_X": None,
+    "accel_Y": None,
+    "accel_Z": None,
+    "gyro_X": None,
+    "gyro_Y": None,
+    "gyro_Z": None,
+    "roll": None,
+    "pitch": None,
+    "original_yaw": None,
+    "yaw": None,
+}
+
+
+def main(args):
+    # Configure the serial connection
+    imu_port = args.imu_port
+    baud_rate = args.baud_rate
+
     # Connect to the gpsd daemon
     gpsd.connect()
     print("Connected to gpsd")
@@ -142,7 +144,7 @@ def main():
         "satellites": None,
     }
 
-    imu = IMUData()
+    imu = IMUData(imu_port, baud_rate)
     imu.start()
     print(f"Connected to IMU on {imu_port}")
 
@@ -214,4 +216,19 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Read GPS and IMU data.")
+    parser.add_argument(
+        "--imu_port",
+        type=str,
+        default="/dev/ttyUSB0",
+        help="The serial port for the IMU (default: /dev/ttyUSB0)",
+    )
+    parser.add_argument(
+        "--baud_rate",
+        type=int,
+        default=115200,
+        help="The baud rate for the IMU (default: 115200)",
+    )
+
+    args = parser.parse_args()
+    main(args)
