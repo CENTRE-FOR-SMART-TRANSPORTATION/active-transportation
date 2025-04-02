@@ -21,9 +21,11 @@ if platform.system() == "Linux":
     device_path = (
         "/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GNSS_receiver-if00"
     )
+    clear = "clear"
     # device_path = "/dev/ttyACM0"
 elif platform.system() == "Windows":
-    device_path = "COM10"
+    device_path = "COM7"
+    clear = "clc"
 
 
 template = {
@@ -50,7 +52,8 @@ template = {
 
 def display_values(data):
     header = ", ".join(data.keys())
-    os.system("clear")  # For Linux/Mac, use 'cls' for Windows
+    if 
+    os.system(clear)  # For Linux/Mac, use 'cls' for Windows
     print(f"{header}")
     print(f"{' | '.join(map(str, data))} ")
 

@@ -2,7 +2,7 @@
     Note: Modify sudo visudo to not ask for password
     sudo visudo
     youruser (name of the user) ALL=(ALL) NOPASSWD: /bin/date
-
+y
     To sync with ntp server:
     sudo sntp -Ss -M 128 0.de.pool.ntp.org
 """
@@ -14,27 +14,31 @@ import platform
 import threading
 from pyubx2 import UBXReader, UBXMessage
 from datetime import datetime, timedelta, timezone
+from prettytable import PrettyTable
 
 # Check if the system is Linux
 if platform.system() == "Linux":
     device_path = (
         "/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GNSS_receiver-if00"
     )
+    setTime = True
+    clear = "clear"
     # device_path = "/dev/ttyACM0"
-elif platform.system() == "Windows":
-    device_path = "COM10"
+elif platform.system() == "Windows":  
+    device_path = "COM12"
+    setTime = False
+    clear = "cls"
+
 
 
 template = {
-    "Time": None,
-    "Posix Time": None,
+    "GPS Time": None,
+    "GPS Posix Time": None,
     "System Time": None,
     "Latitude": None,
     "Longitude": None,
-    "Altitude (MSL)": None,
-    "Azimuth (true)": None,
-    "Azimuth (magnetic)": None,
-    "Heading": None,
+    "Altitude": None,
+    "Azimuth": None,
     "Roll": None,
     "Pitch": None,
     "Yaw": None,
@@ -73,7 +77,7 @@ calib_status_template = {
 
 def display_values(data, status, calib_status):
     if None not in list(data.values()):
-        # os.system("clear")  # Clear screen
+        os.system(clear)  # Clear screen
         # data_table = PrettyTable(list(data.keys()))
         # data_table.add_row(list(data.values()))
 
@@ -83,8 +87,8 @@ def display_values(data, status, calib_status):
         # calib_status_table = PrettyTable(list(calib_status.keys()))
         # calib_status_table.add_row(list(calib_status.values()))
 
-        # sys.stdout.write(f"\033[H{data}\n\n{status}\n\n{calib_status}\n")
-        print(data, status, calib_status)
+        sys.stdout.write(f"\033[H{data}\n\n{status}\n\n{calib_status}\n")
+        # print(data, status, calib_status)
         sys.stdout.flush()
     # if None not in list(data.values()):
     #     print(data.values())
@@ -108,11 +112,11 @@ def process_parsed_data(raw_data, parsed_data):
             )
             epoch_time = epoch_time.timestamp()
             data["System Time"] = datetime.now().timestamp()
-            data["Time"] = iso_time
-            data["Posix Time"] = f"{epoch_time:.3f}"
+            data["GPS Time"] = iso_time
+            data["GPS Posix Time"] = f"{epoch_time:.3f}"
             data["Latitude"] = parsed_data.lat
             data["Longitude"] = parsed_data.lon
-            data["Altitude (MSL)"] = parsed_data.hMSL / 1000
+            data["Altitude"] = parsed_data.hMSL / 1000
             status["GPS Fix"] = parsed_data.fixType
             status["GPS Accuracy (H, V)"] = (
                 parsed_data.hAcc / 1000,
@@ -180,7 +184,7 @@ def process_parsed_data(raw_data, parsed_data):
                         sensor_name = sensor_types[sensor_type]
                         calib_status[sensor_name] = (
                             "Calibrated"
-                            if calib_status_value == 2
+                            if calib_status_value in [2, 3]
                             else (
                                 "Calibrating"
                                 if calib_status_value == 1
@@ -190,23 +194,14 @@ def process_parsed_data(raw_data, parsed_data):
                 except AttributeError:
                     print(f"Warning: Missing sensor data for index {i}")
 
-        elif msg_type == "GNGGA":
+        elif msg_type in ["GNGGA", "GPGGA", "GNGNS", "GPGNS"]:
             data["Latitude"] = parsed_data.lat
             data["Longitude"] = parsed_data.lon
-            data["Altitude (MSL)"] = parsed_data.alt
+            data["Altitude"] = parsed_data.alt
+            status["No. of Satellites"] = parsed_data.numSV
 
         elif msg_type == "GNVTG":
-            data["Azimuth (true)"] = parsed_data.cogt
-            data["Azimuth (magnetic)"] = parsed_data.cogm
-
-        elif msg_type == "NAV-SAT":
-            status["No. of Satellites"] = parsed_data.numSvs
-
-        elif msg_type == "GNTHS":
-            # TODO: Edit based on parsed data
-            mode = parsed_data.mi
-            if mode in ["A", "D"]:
-                data["Heading"] = parsed_data.headt
+            data["Azimuth"] = parsed_data.cogt
 
 
 def process_data():
@@ -315,7 +310,9 @@ def main():
     data_file.write(header + "\n")
     data_file.flush()
 
-    set_time()
+    if setTime:
+        set_time()
+        
     process_data()
 
 
