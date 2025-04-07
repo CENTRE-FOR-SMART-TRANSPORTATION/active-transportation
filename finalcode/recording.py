@@ -11,19 +11,11 @@ import os
 import datetime
 import platform
 import threading
-from ublox import Ublox
+from ublox_thread import Ublox
 from witmotion import WitMotion
+import argparse
 
-# Check if the system is Linux
-if platform.system() == "Linux":
-    device_path = (
-        "/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GNSS_receiver-if00"
-    )
-    # device_path = "/dev/ttyACM0"get_last_data
-elif platform.system() == "Windows":
-    device_path = "COM10"
-
-TIME = datetime.datetime.now()
+TIME = None
 
 
 def set_time(time):
@@ -33,27 +25,57 @@ def set_time(time):
 
 
 def main():
+     # Create the parser
+    parser = argparse.ArgumentParser(description="Process GPS and Witmotion ports.")
+
+    # Add optional arguments for GPS port and Witmotion port
+    parser.add_argument('--gps-port', type=str, help='Specify the GPS port (e.g., /dev/ttyUSB0)')
+    parser.add_argument('--witmotion-port', type=str, help='Specify the Witmotion port (e.g., /dev/ttyUSB1)')
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Access the arguments
+    gps_port = args.gps_port
+    witmotion_port = args.witmotion_port
+
+    currentTime = datetime.datetime.now()
+    currentTime = currentTime.strftime("%Y-%m-%d_%H-%M-%S")
+    
+    if not os.path.exists(currentTime):
+        os.mkdir(currentTime)
+
     # Initialize the Ublox GPS
-    gps = Ublox(gps_port="/dev/ttyACM0", baud_rate=115200,
-                fusion=True, save_data=True)
+    if gps_port:
+        gps = Ublox(gps_port=gps_port, baud_rate=115200,
+                    fusion=True, save_data=True, save_path=currentTime)
+        gps.start()
+
 
     # Initialize the WitMotion IMU
-    imu = WitMotion(port="/dev/ttyUSB0", baud_rate=115200)
+    if witmotion_port:
+        imu = WitMotion(imu_port=witmotion_port, baud_rate=115200, save_data=True, save_path=currentTime)
+        imu.start()
 
     # Start the GPS and IMU
-    gps.start()
-    imu.start()
-    set_time(TIME)
+    global TIME
+    TIME = datetime.datetime.now()
+    set_time(TIME)    # Start the GPS and IMU
 
     try:
         while True:
-            gps_data = gps.get_last_data()
-            TIME = gps_data["time"]
-            print("GPS Data:", gps_data)
-            print("IMU Data:", imu.get_last_data())
+            if gps_port:
+                gps_data = gps.get_last_data()
+                TIME = gps_data["time"]
+                print("GPS Data:", gps_data)
+            
+            if witmotion_port:
+                print("IMU Data:", imu.get_last_data())
     except KeyboardInterrupt:
-        gps.stop()
-        imu.stop()
+        if gps_port:
+            gps.stop()
+        if witmotion_port:
+            imu.stop()
 
 
 if __name__ == "__main__":

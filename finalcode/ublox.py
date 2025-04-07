@@ -177,8 +177,6 @@ class Ublox:
                             self.save_data()
         except Exception as e:
             print(f"GPS Read Error: {e}")
-        finally:
-            self.schedule_update()
 
     def backup_data(self):
         backup_msg = b"\xb5\x62\x09\x14\x04\x00\x00\x00\x00\x00"

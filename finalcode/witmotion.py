@@ -23,7 +23,7 @@ class WitMotion:
         self._last_data = self.template.copy()
         self._save_data = save_data
         self._save_path = os.path.join(
-            save_path, "witmotion_data_1.csv") if save_path else None
+            save_path, "witmotion_data.csv") if save_path else None
         self._filebuffer = []
 
         if self._save_data and self._save_path:
@@ -183,9 +183,7 @@ class WitMotion:
 
     def __del__(self):
         """Cleanup resources on object destruction"""
-        if self.serial and self.serial.is_open:
-            self.serial.close()
-
+        self.stop()
 
 if __name__ == "__main__":
     imu = WitMotion(save_data=True, save_path="test")
