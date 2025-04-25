@@ -67,10 +67,12 @@ def main():
             if gps_port:
                 gps_data = gps.get_last_data()
                 TIME = gps_data["time"]
-                print("GPS Data:", gps_data)
-            
-            if witmotion_port:
-                print("IMU Data:", imu.get_last_data())
+                # print("GPS Data:", gps_data)
+                calib_status = gps.get_calib_status()
+                status = gps.get_status()
+                print({**calib_status, **status})
+            # if witmotion_port:
+                # print("IMU Data:", imu.get_last_data())
     except KeyboardInterrupt:
         if gps_port:
             gps.stop()

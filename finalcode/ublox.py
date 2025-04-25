@@ -31,7 +31,7 @@ class Ublox:
         self._calib_status = dt.calib_status_template.copy()
         self._save_data = save_data
         self._save_path = os.path.join(
-            save_path, "ublox_data.csv") if save_path else None
+            save_path, f"ublox_data_{gps_port[-1:]}.csv") if save_path else None
         self._filebuffer = []
 
         if self._save_data and self._save_path:

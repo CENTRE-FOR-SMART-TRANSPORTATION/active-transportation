@@ -12,7 +12,7 @@ DEG_TO_RAD = np.pi / 180
 
 
 class WitMotion:
-    def __init__(self, imu_port="/dev/ttyUSB0", baud_rate=115200, save_data=False, save_path=None):
+    def __init__(self, imu_port, baud_rate, save_data=False, save_path=None):
         self.serial = None
         self.running = False
         self.timer = None
@@ -23,7 +23,7 @@ class WitMotion:
         self._last_data = self.template.copy()
         self._save_data = save_data
         self._save_path = os.path.join(
-            save_path, "witmotion_data.csv") if save_path else None
+            save_path, f"witmotion_data_{imu_port[-1:]}.csv") if save_path else None
         self._filebuffer = []
 
         if self._save_data and self._save_path:
@@ -78,34 +78,35 @@ class WitMotion:
         """Generic function to parse IMU sensor data"""
         if len(data) < expected_length or data[0] != expected_cmd:
             return None
+        # print(data)
         return np.array(struct.unpack("<hhh", data[1:7])) / 32768.0 * scale_factor
 
-    def _get_acceleration(self, data):
-        """Returns acceleration with gravity removed"""
-        acc = self._parse_sensor_data(data, ord("Q"), 16.0)
-        return acc - np.array([0, 0, GRAVITY]) if acc is not None else None
-
-    def _get_gyro(self, data):
-        """Returns gyroscope values in radians per second"""
-        gyro = self._parse_sensor_data(data, ord("R"), 2000.0)
-        return gyro * DEG_TO_RAD if gyro is not None else None
-
-    def _get_angle(self, data):
-        """Returns angles in radians"""
-        angle = self._parse_sensor_data(data, ord("S"), 180.0)
-        return angle * DEG_TO_RAD if angle is not None else None
-
     # def _get_acceleration(self, data):
-    #     return self._parse_sensor_data(data, ord("Q"), 16.0)
+    #     """Returns acceleration with gravity removed"""
+    #     acc = self._parse_sensor_data(data, ord("Q"), 16.0)
+    #     return acc - np.array([0, 0, GRAVITY]) if acc is not None else None
 
     # def _get_gyro(self, data):
-    #     return self._parse_sensor_data(data, ord("R"), 2000.0)
+    #     """Returns gyroscope values in radians per second"""
+    #     gyro = self._parse_sensor_data(data, ord("R"), 2000.0)
+    #     return gyro * DEG_TO_RAD if gyro is not None else None
 
     # def _get_angle(self, data):
-    #     return self._parse_sensor_data(data, ord("S"), 180.0)
+    #     """Returns angles in radians"""
+    #     angle = self._parse_sensor_data(data, ord("S"), 180.0)
+    #     return angle * DEG_TO_RAD if angle is not None else None
 
-    # def _get_magnetic(self, data):
-    #     return self._parse_sensor_data(data, ord("T"), 1.0)
+    def _get_acceleration(self, data):
+        return self._parse_sensor_data(data, ord("Q"), 16.0)
+
+    def _get_gyro(self, data):
+        return self._parse_sensor_data(data, ord("R"), 2000.0)
+
+    def _get_angle(self, data):
+        return self._parse_sensor_data(data, ord("S"), 180.0)
+
+    def _get_magnetic(self, data):
+        return self._parse_sensor_data(data, ord("T"), 1.0)
 
     def _get_quaternion(self, data):
         """Parses quaternion data"""
@@ -144,12 +145,13 @@ class WitMotion:
             for key, func in data_extractors.items():
                 result = func(s)
                 if result is not None:
-                    if key == "angle":  # Special yaw correction
-                        result[2] = (result[2] + 360) % 360
+                    # if key == "angle":  # Special yaw correction
+                        # result[2] = (result[2] + 360) % 360
                     self._current_data.update(
                         dict(zip(data_keys[key], result)))
 
             # Ensure we have complete data before storing
+            print(self._current_data)
             if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
                 self._current_data.update(
                     {"epochtime": epoch_time, "time": formatted_time})
@@ -186,12 +188,12 @@ class WitMotion:
         self.stop()
 
 if __name__ == "__main__":
-    imu = WitMotion(save_data=True, save_path="test")
+    imu = WitMotion(imu_port='/dev/ttyUSB1', baud_rate=115200, save_data=True, save_path="test")
     imu.start()
     try:
         while True:
-            print(imu.get_last_data())
-            # pass
+            # print(imu.get_last_data())
+            pass
     except KeyboardInterrupt:
         imu.stop()
         print("IMU stopped.")
