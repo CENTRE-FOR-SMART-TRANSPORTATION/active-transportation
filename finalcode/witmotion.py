@@ -146,7 +146,7 @@ class WitMotion:
                 result = func(s)
                 if result is not None:
                     # if key == "angle":  # Special yaw correction
-                        # result[2] = (result[2] + 360) % 360
+                    # result[2] = (result[2] + 360) % 360
                     self._current_data.update(
                         dict(zip(data_keys[key], result)))
 
@@ -154,7 +154,7 @@ class WitMotion:
             print(self._current_data)
             if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
                 self._current_data.update(
-                    {"epochtime": epoch_time, "time": formatted_time})
+                    {"systemepoch": epoch_time, "systemtime": formatted_time})
                 self._last_data = self._current_data.copy()
                 self._current_data = self.template.copy()
 
@@ -187,8 +187,10 @@ class WitMotion:
         """Cleanup resources on object destruction"""
         self.stop()
 
+
 if __name__ == "__main__":
-    imu = WitMotion(imu_port='/dev/ttyUSB1', baud_rate=115200, save_data=True, save_path="test")
+    imu = WitMotion(imu_port='/dev/ttyUSB1', baud_rate=115200,
+                    save_data=True, save_path="test")
     imu.start()
     try:
         while True:

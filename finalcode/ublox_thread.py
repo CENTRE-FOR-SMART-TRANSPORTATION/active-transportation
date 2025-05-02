@@ -13,6 +13,7 @@ GPS_EPOCH = datetime(1980, 1, 6)
 GPS_UTC_OFFSET = 18
 DEG_TO_RAD = np.pi / 180
 
+
 class Ublox:
     def __init__(self, gps_port="/dev/ttyACM0", baud_rate=115200, fusion=False, save_data=False, save_path=None):
         self._serial = None
@@ -29,7 +30,8 @@ class Ublox:
         self._status = dt.status_template.copy()
         self._calib_status = dt.calib_status_template.copy()
         self._save_data = save_data
-        self._save_path = os.path.join(save_path, f"ublox_data_{gps_port[-1:]}.csv") if save_path else None
+        self._save_path = os.path.join(
+            save_path, f"ublox_data_{gps_port[-1:]}.csv") if save_path else None
         self._rawbuffer = Queue()
         self._filebuffer = Queue()  # Use a queue for thread-safe data transfer
         self._save_thread = None
@@ -84,7 +86,7 @@ class Ublox:
     def schedule_update(self):
         self._update_thread = threading.Thread(target=self.read_raw)
         self._update_thread.start()
-    
+
     def parse_thread(self):
         self._parse_thread = threading.Thread(target=self.parse_sensor_data)
         self._parse_thread.start()
@@ -124,7 +126,8 @@ class Ublox:
                         roll = parsed_data.roll * DEG_TO_RAD
                         pitch = parsed_data.pitch * DEG_TO_RAD
                         yaw = parsed_data.heading * DEG_TO_RAD
-                        quaternion = R.from_euler('xyz', [roll, pitch, yaw]).as_quat()
+                        quaternion = R.from_euler(
+                            'xyz', [roll, pitch, yaw]).as_quat()
 
                         self._current_data.update({
                             "roll": roll,
@@ -145,7 +148,8 @@ class Ublox:
                     elif msg_type == "ESF-MEAS":
                         for i in range(1, parsed_data.numMeas + 1):
                             data_type = getattr(parsed_data, f"dataType_0{i}")
-                            data_field = getattr(parsed_data, f"dataField_0{i}")
+                            data_field = getattr(
+                                parsed_data, f"dataField_0{i}")
                             if data_type == 16:
                                 self._current_data["gyroX"] = data_field / \
                                     1000 * DEG_TO_RAD
@@ -172,7 +176,8 @@ class Ublox:
                                         14: "accY", 16: "accZ", 17: "gyroY", 18: "gyroZ"}
                         for i in range(1, parsed_data.numSens + 1):
                             try:
-                                sensor_type = getattr(parsed_data, f"type_{i:02d}")
+                                sensor_type = getattr(
+                                    parsed_data, f"type_{i:02d}")
                                 calib_status_value = getattr(
                                     parsed_data, f"calibStatus_{i:02d}")
                                 if sensor_type in sensor_types:
@@ -180,7 +185,8 @@ class Ublox:
                                     self._calib_status[sensor_name] = "Calibrated" if calib_status_value in [
                                         2, 3] else ("Calibrating" if calib_status_value == 1 else "Not Calibrated")
                             except AttributeError:
-                                print(f"Warning: Missing sensor data for index {i}")
+                                print(
+                                    f"Warning: Missing sensor data for index {i}")
 
                     elif msg_type in ["GNGGA", "GPGGA", "GNGNS", "GPGNS"]:
                         time_str = str(parsed_data.time)
@@ -193,13 +199,23 @@ class Ublox:
                         )
                         epoch_time = epoch_time.timestamp()
 
+                        system_time = datetime.now()
+                        system_time_str = system_time.strftime(
+                            "%Y-%m-%dT%H:%M:%S.%fZ")
+                        system_epoch_time = datetime.strptime(system_time_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+                            tzinfo=timezone.utc
+                        )
+
                         self._current_data.update({
-                            "time": iso_time,
-                            "epochtime": f"{epoch_time:.3f}",
+                            "systemtime": system_time_str,
+                            "systemepochtime": f"{system_epoch_time.timestamp():.3f}",
+                            "gpstime": iso_time,
+                            "gpsepoch": f"{epoch_time:.3f}",
                             "lat": parsed_data.lat,
                             "lon": parsed_data.lon,
                             "alt": parsed_data.alt,
                         })
+
                         self._status["nvSat"] = parsed_data.numSV
 
                     elif msg_type == "GNVTG":
@@ -209,10 +225,10 @@ class Ublox:
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
                     if self._save_data:
-                        self._filebuffer.put(self._last_data)  # Correct method for Queue
+                        # Correct method for Queue
+                        self._filebuffer.put(self._last_data)
             except Exception as e:
                 print(f"Parsing Error: {e}")
-
 
     def read_raw(self):
         while self.running:
@@ -222,7 +238,7 @@ class Ublox:
                     self._rawbuffer.put(parsed_data)
             except Exception as e:
                 print(f"GPS Read Error: {e}")
-    
+
     def get_last_data(self):
         return self._last_data
 

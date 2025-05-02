@@ -1,9 +1,11 @@
 time_template = {
-    "time": None,
-    "epochtime": None,
+    "systemtime": None,
+    "systemepoch": None,
 }
 
 gps_template = {
+    "gpstime": None,
+    "gpsepoch": None,
     "lat": None,
     "lon": None,
     "alt": None,

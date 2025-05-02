@@ -78,9 +78,18 @@ class Ublox:
                 )
                 epoch_time = epoch_time.timestamp()
 
+                system_time = datetime.now()
+                system_time_str = system_time.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ")
+                system_epoch_time = datetime.strptime(system_time_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+                    tzinfo=timezone.utc
+                )
+
                 self._current_data.update({
-                    "time": iso_time,
-                    "epochtime": f"{epoch_time:.3f}",
+                    "systemtime": system_time_str,
+                    "systemepochtime": f"{system_epoch_time.timestamp():.3f}",
+                    "gpstime": iso_time,
+                    "gpsepoch": f"{epoch_time:.3f}",
                     "lat": parsed_data.lat,
                     "lon": parsed_data.lon,
                     "alt": parsed_data.hMSL / 1000,
