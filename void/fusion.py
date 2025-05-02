@@ -38,7 +38,7 @@ template = {
     "Latitude": None,
     "Longitude": None,
     "Altitude": None,
-    "Azimuth": None,
+    # "Azimuth": None,
     "Roll": None,
     "Pitch": None,
     "Yaw": None,

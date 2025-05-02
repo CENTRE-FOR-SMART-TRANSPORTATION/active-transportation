@@ -1,0 +1,21 @@
+UBX - 
+    NAV-PVT
+    NAV-ATT
+    ESF-MEAS
+    ESF-INS
+    ESF-STATUS
+NMEA (Like GGA or GPA)
+NMEA (VTG)
+
+Config (loading a configuration)    
+Tools -> Reciver Config -> ... -> trasnfer file to GNSS
+Reciver -> Action -> Save Config
+
+Reverting to default
+UBX-CFG-CFG -> Default Configuration (3rd line)
+
+IMU Config
+
+UBX-CFG-NAV5
+
+Line 28 (Check COM port)
