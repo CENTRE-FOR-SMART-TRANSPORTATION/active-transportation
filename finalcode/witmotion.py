@@ -151,7 +151,7 @@ class WitMotion:
                         dict(zip(data_keys[key], result)))
 
             # Ensure we have complete data before storing
-            print(self._current_data)
+            # print(self._current_data)
             if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
                 self._current_data.update(
                     {"systemepoch": epoch_time, "systemtime": formatted_time})

@@ -208,7 +208,7 @@ class Ublox:
 
                         self._current_data.update({
                             "systemtime": system_time_str,
-                            "systemepochtime": f"{system_epoch_time.timestamp():.3f}",
+                            "systemepoch": f"{system_epoch_time.timestamp():.3f}",
                             "gpstime": iso_time,
                             "gpsepoch": f"{epoch_time:.3f}",
                             "lat": parsed_data.lat,
@@ -267,7 +267,13 @@ class Ublox:
 
 
 if __name__ == "__main__":
-    gps = Ublox(gps_port="COM7", fusion=True, save_data=True, save_path="test")
+    gps = Ublox(gps_port="/dev/ttyACM0", fusion=False, save_data=True, save_path="test")
     gps.start()
-    time.sleep(30)
+    while True:
+        try:
+            print(gps.get_last_data())
+        except KeyboardInterrupt:
+            break
+    
+    # time.sleep(30)
     gps.stop()
