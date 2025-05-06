@@ -41,9 +41,9 @@ class Sensor(QWidget):
 
         # Populate available ethernet interfaces
         for interface in QNetworkInterface.allInterfaces():
-            flags = interface.flags()
-            if flags & QNetworkInterface.IsUp and flags & QNetworkInterface.IsRunning and not flags & QNetworkInterface.IsLoopBack:
-                self.ui.ethernetPort.addItem(interface.humanReadableName())
+            # flags = interface.flags()
+            # if flags & QNetworkInterface.IsUp and flags & QNetworkInterface.IsRunning and not flags & QNetworkInterface.IsLoopBack:
+            self.ui.ethernetPort.addItem(interface.humanReadableName())
 
     @Slot()
     def on_next_clicked(self):
@@ -68,11 +68,6 @@ class Sensor(QWidget):
         process.setWorkingDirectory(self.mainWindow.pandarview_path)
         command = f"echo '{self.mainWindow.password}' | sudo -S bash PandarView.sh"
         process.start("bash", ["-c", command])
-
-        if not process.waitForStarted():
-            print("Failed to start the script.")
-        if not process.waitForFinished():
-            print("Script didn't finish properly.")
 
         output = process.readAllStandardOutput().data().decode()
         error = process.readAllStandardError().data().decode()
@@ -114,6 +109,7 @@ class Sensor(QWidget):
             return
 
         command = f"echo '{self.mainWindow.password}' | sudo -S ifconfig {ethernet_port} 192.168.1.100"
+        print(command)
         subprocess.Popen(["bash", "-c", command])
 
         # TODO: Once set, if it reverts automate the process. (Timer)
@@ -136,8 +132,6 @@ class Sensor(QWidget):
         self.ui.quatZ.setPlainText(data.get("qZ", ""))
         self.ui.quatW.setPlainText(data.get("qW", ""))
 
-
-
     @Slot(dict)
     def displayGPSData(self, data):
         # TODO: Add Fusion IMU
@@ -151,8 +145,10 @@ class Sensor(QWidget):
         self.ui.imuStatus.setPlainText(data.get("imuStatus", ""))
         self.ui.GPSFix.setPlainText(data.get("gpsFix", ""))
         self.ui.numSat.setPlainText(data.get("nvSat", ""))
-        self.ui.GPSAccuH.setPlainText(data.get("gpsAcc", [""])[0])  # Handle list safely
-        self.ui.GPSAccuV.setPlainText(data.get("gpsAcc", ["", ""])[1])  # Handle list safely
+        self.ui.GPSAccuH.setPlainText(data.get("gpsAcc", [""])[
+                                      0])  # Handle list safely
+        self.ui.GPSAccuV.setPlainText(data.get("gpsAcc", ["", ""])[
+                                      1])  # Handle list safely
         self.ui.rollAccu.setPlainText(data.get("rollAcc", ""))
         self.ui.pitchAccu.setPlainText(data.get("pitchAcc", ""))
         self.ui.yawAccu.setPlainText(data.get("yawAcc", ""))
@@ -179,7 +175,12 @@ class Sensor(QWidget):
         currentTime = datetime.datetime.now()
         currentTime = currentTime.strftime("%Y-%m-%d_%H-%M-%S")
 
-        recording_path = os.path.join(self.mainWindow.recording_path, currentTime)
+        recording_path = os.path.join(
+            self.mainWindow.recording_path, currentTime)
+
+        if not os.path.exists(recording_path):
+            os.mkdir(recording_path)
+
         if gpsport != "None" and gpstype != "None" and gpsbaud != 0:
             gps = True
             self.gpsthread = QThread(self)
