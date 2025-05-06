@@ -1,0 +1,10 @@
+{
+    "files": [
+        "main.py",
+        "sensor.py",
+        "datatypes.py",
+        "ublox.py",
+        "witmotion.py",
+        "mainwindow.py"
+    ]
+}
