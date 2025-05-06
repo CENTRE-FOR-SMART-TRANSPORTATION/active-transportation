@@ -8,6 +8,7 @@ from PySide6.QtGui import QDesktopServices
 import subprocess
 import datetime
 import shutil
+import os
 
 from ui_sensor import Ui_Sensor
 from witmotion import WitMotion
@@ -119,46 +120,48 @@ class Sensor(QWidget):
 
     @Slot(dict)
     def displayIMUData(self, data):
-        self.ui.systemTimeIMU.setPlainText(data["systemtime"])
-        self.ui.TimeIMU.setPlainText(data["imutime"])
-        self.ui.AccX.setPlainText(data["accX"])
-        self.ui.AccY.setPlainText(data["accY"])
-        self.ui.AccZ.setPlainText(data["accZ"])
-        self.ui.gyroX.setPlainText(data["gyroX"])
-        self.ui.gyroY.setPlainText(data["gyroY"])
-        self.ui.gyroZ.setPlainText(data["gyroZ"])
-        self.ui.roll.setPlainText(data["roll"])
-        self.ui.pitch.setPlainText(data["pitch"])
-        self.ui.yaw.setPlainText(data["yaw"])
-        self.ui.quatX.setPlainText(data["qX"])
-        self.ui.quatY.setPlainText(data["qY"])
-        self.ui.quatZ.setPlainText(data["qZ"])
-        self.ui.quatW.setPlainText(data["qW"])
+        self.ui.systemTimeIMU.setPlainText(data.get("systemtime", ""))
+        self.ui.TimeIMU.setPlainText(data.get("imutime", ""))
+        self.ui.AccX.setPlainText(data.get("accX", ""))
+        self.ui.AccY.setPlainText(data.get("accY", ""))
+        self.ui.AccZ.setPlainText(data.get("accZ", ""))
+        self.ui.gyroX.setPlainText(data.get("gyroX", ""))
+        self.ui.gyroY.setPlainText(data.get("gyroY", ""))
+        self.ui.gyroZ.setPlainText(data.get("gyroZ", ""))
+        self.ui.roll.setPlainText(data.get("roll", ""))
+        self.ui.pitch.setPlainText(data.get("pitch", ""))
+        self.ui.yaw.setPlainText(data.get("yaw", ""))
+        self.ui.quatX.setPlainText(data.get("qX", ""))
+        self.ui.quatY.setPlainText(data.get("qY", ""))
+        self.ui.quatZ.setPlainText(data.get("qZ", ""))
+        self.ui.quatW.setPlainText(data.get("qW", ""))
+
+
 
     @Slot(dict)
     def displayGPSData(self, data):
         # TODO: Add Fusion IMU
-        self.ui.systemTimeGPS.setPlainText(data["systemtime"])
-        self.ui.GPSTime.setPlainText(data["gpstime"])
-        self.ui.latitude.setPlainText(data["lat"])
-        self.ui.longitude.setPlainText(data["lon"])
-        self.ui.altitude.setPlainText(data["alt"])
-        self.ui.heading.setPlainText(data["azimuth"])
-        self.ui.fusionMode.setPlainText(data["fusionMode"])
-        self.ui.imuStatus.setPlainText(data["imuStatus"])
-        self.ui.GPSFix.setPlainText(data["gpsFix"])
-        self.ui.numSat.setPlainText(data["nvSat"])
-        self.ui.GPSAccuH.setPlainText(data["gpsAcc"][0])
-        self.ui.GPSAccuV.setPlainText(data["gpsAcc"][1])
-        self.ui.rollAccu.setPlainText(data["rollAcc"])
-        self.ui.pitchAccu.setPlainText(data["pitchAcc"])
-        self.ui.yawAccu.setPlainText(data["yawAcc"])
-        self.ui.calibGyroX.setPlainText(data["gyroX_calib"])
-        self.ui.calibGyroY.setPlainText(data["gyroY_calib"])
-        self.ui.calibGyroZ.setPlainText(data["gyroZ_calib"])
-        self.ui.calibAccX.setPlainText(data["accZ_calib"])
-        self.ui.calibAccY.setPlainText(data["accY_calib"])
-        self.ui.calibAccZ.setPlainText(data["accZ_calib"])
+        self.ui.systemTimeGPS.setPlainText(data.get("systemtime", ""))
+        self.ui.GPSTime.setPlainText(data.get("gpstime", ""))
+        self.ui.latitude.setPlainText(data.get("lat", ""))
+        self.ui.longitude.setPlainText(data.get("lon", ""))
+        self.ui.altitude.setPlainText(data.get("alt", ""))
+        self.ui.heading.setPlainText(data.get("azimuth", ""))
+        self.ui.fusionMode.setPlainText(data.get("fusionMode", ""))
+        self.ui.imuStatus.setPlainText(data.get("imuStatus", ""))
+        self.ui.GPSFix.setPlainText(data.get("gpsFix", ""))
+        self.ui.numSat.setPlainText(data.get("nvSat", ""))
+        self.ui.GPSAccuH.setPlainText(data.get("gpsAcc", [""])[0])  # Handle list safely
+        self.ui.GPSAccuV.setPlainText(data.get("gpsAcc", ["", ""])[1])  # Handle list safely
+        self.ui.rollAccu.setPlainText(data.get("rollAcc", ""))
+        self.ui.pitchAccu.setPlainText(data.get("pitchAcc", ""))
+        self.ui.yawAccu.setPlainText(data.get("yawAcc", ""))
+        self.ui.calibGyroX.setPlainText(data.get("gyroX_calib", ""))
+        self.ui.calibGyroY.setPlainText(data.get("gyroY_calib", ""))
+        self.ui.calibGyroZ.setPlainText(data.get("gyroZ_calib", ""))
+        self.ui.calibAccX.setPlainText(data.get("accZ_calib", ""))
+        self.ui.calibAccY.setPlainText(data.get("accY_calib", ""))
+        self.ui.calibAccZ.setPlainText(data.get("accZ_calib", ""))
 
     @Slot()
     def on_serialConnectionButton_clicked(self):
@@ -176,7 +179,7 @@ class Sensor(QWidget):
         currentTime = datetime.datetime.now()
         currentTime = currentTime.strftime("%Y-%m-%d_%H-%M-%S")
 
-        recording_path = self.mainWindow.recording_path + currentTime
+        recording_path = os.path.join(self.mainWindow.recording_path, currentTime)
         if gpsport != "None" and gpstype != "None" and gpsbaud != 0:
             gps = True
             self.gpsthread = QThread(self)

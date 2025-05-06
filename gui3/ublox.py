@@ -227,6 +227,8 @@ class Ublox(QObject):
                     self.temp = {**self._last_data, **
                                  self._status, **self._calib_status}
 
+                    self.temp = {k: str(v) if isinstance(v, (int, float)) else v for k, v in self.temp.items()}
+                    
                     self.lastData.emit(self.temp)
 
                     if self._save_data:

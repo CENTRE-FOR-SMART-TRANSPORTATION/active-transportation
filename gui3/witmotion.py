@@ -5,7 +5,7 @@ import numpy as np
 import datetime
 import os
 import datatypes as dt
-from queue import Queue
+from queue import Queue, Empty
 from PySide6.QtCore import Signal, QObject
 
 
@@ -42,12 +42,15 @@ class WitMotion(QObject):
 
     def start(self):
         """Start reading from the IMU"""
-        self.serial = serial.Serial(self.imu_port, self.baud_rate, timeout=1)
+        self.serial = serial.Serial(self.imu_port, self.baud_rate, timeout=0.01)
         self.running = True
-        self.schedule_update()
-        self.parse_thread()
+        self._update_thread = threading.Thread(target=self.read_raw, daemon=True)
+        self._parse_thread = threading.Thread(target=self.parse_sensor_data, daemon=True)
+        self._update_thread.start()
+        self._parse_thread.start()
         if self._save_data:
-            self.start_saving_thread()
+            self._save_thread = threading.Thread(target=self.save_data_thread, daemon=True)
+            self._save_thread.start()
 
     def stop(self):
         """Stop reading from the IMU"""
@@ -58,23 +61,17 @@ class WitMotion(QObject):
         if self.serial and self.serial.is_open:
             self.serial.close()
 
-    def schedule_update(self):
-        self._update_thread = threading.Thread(target=self.read_raw)
-        self._update_thread.start()
-
-    def parse_thread(self):
-        self._parse_thread = threading.Thread(target=self.parse_sensor_data)
-        self._parse_thread.start()
-
-    def start_saving_thread(self):
-        self._save_thread = threading.Thread(target=self.save_data_thread)
-        self._save_thread.start()
-
     def read_raw(self):
+        count = 0
         while self.running:
             try:
-                s = self.serial.read_until(b"U")
-                self._rawbuffer.put(s)
+                if count == 0:
+                    data = self.serial.read_until(b"U")   # Try reading fixed packet size
+                    count += 1
+                else:
+                    data = self.serial.read(11)
+                if data and len(data) > 10:
+                    self._rawbuffer.put(data)
             except Exception as e:
                 print(f"IMU Read Error: {e}")
 
@@ -141,19 +138,17 @@ class WitMotion(QObject):
         while self.running:
             try:
                 s = self._rawbuffer.get(timeout=1)
-
-                # Read one IMU packet (11 bytes)
-                if len(s) < 11:
-                    return  # Ignore incomplete packets
-
+		
                 # Store timestamp once for efficiency
                 now = datetime.datetime.now()
                 epoch_time = now.timestamp() * 1000
                 formatted_time = now.strftime("%Y-%m-%d %H:%M:%S.%f")
+                self._current_data.update(
+                    {"systemepoch": epoch_time, "systemtime": formatted_time})
 
                 # Extract sensor data
                 data_extractors = {
-                    "time": self._get_time,
+                    # "time": self._get_time,
                     "acc": self._get_acceleration,
                     "gyro": self._get_gyro,
                     "angle": self._get_angle,
@@ -161,7 +156,7 @@ class WitMotion(QObject):
                 }
 
                 data_keys = {
-                    "time": ["imutime"],
+                    # "time": ["imutime"],
                     "acc": ["accX", "accY", "accZ"],
                     "gyro": ["gyroX", "gyroY", "gyroZ"],
                     "angle": ["roll", "pitch", "yaw"],
@@ -175,43 +170,41 @@ class WitMotion(QObject):
                         # result[2] = (result[2] + 360) % 360
                         self._current_data.update(
                             dict(zip(data_keys[key], result)))
-
-                # Ensure we have complete data before storing
+		
+		
                 # print(self._current_data)
                 if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
-                    self._current_data.update(
-                        {"systemepoch": epoch_time, "systemtime": formatted_time})
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
-
-                    self.lastData.emit(self._last_data)
+                    temp = {k: str(v) if isinstance(v, (int, float)) else v for k, v in self._last_data.items()}
+                    self.lastData.emit(temp)
 
                     if self._save_data:
                         self._filebuffer.put(self._last_data)
-                        if len(self._filebuffer) > 100:
-                            self.save_data()
 
             except Exception as e:
-                print(f"IMU Read Error: {e}")
+                print(f"IMU Read Error: {e!r}")
 
-            finally:
-                self.schedule_update()
 
     def save_data_thread(self):
         while self.running:
             try:
-                # Wait for data to be available and get it
                 data = self._filebuffer.get(timeout=1)
                 with open(self._save_path, "a") as f:
                     f.write(",".join(map(str, data.values())) + "\n")
+            except Empty:
+                continue  # Just wait again
             except Exception as e:
-                print(f"Error writing to file: {e}")
-            except Queue.Empty:
-                # No data available, continue waiting
-                pass
+                print(f"Error writing to file: {e!r}")
 
+
+    def save_data(self):
+        pass
+        
+       
     def get_last_data(self):
         """Return the last complete data packet"""
+        # self.lastData.emit(self._last_data)
         return self._last_data
 
     def __del__(self):
@@ -220,7 +213,7 @@ class WitMotion(QObject):
 
 
 if __name__ == "__main__":
-    imu = WitMotion(imu_port='/dev/ttyUSB1', baud_rate=115200,
+    imu = WitMotion(imu_port='/dev/ttyUSB0', baud_rate=115200,
                     save_data=True, save_path="test")
     imu.start()
     try:
