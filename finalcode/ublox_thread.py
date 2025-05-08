@@ -1,4 +1,5 @@
 import os
+import io
 import time
 import serial
 import threading
@@ -6,12 +7,21 @@ import numpy as np
 import datatypes as dt
 from queue import Queue
 from pyubx2 import UBXReader
+from pyrtcm import RTCMReader
+from pygnssutils import GNSSNTRIPClient
 from scipy.spatial.transform import Rotation as R
 from datetime import datetime, timedelta, timezone, date
 
 GPS_EPOCH = datetime(1980, 1, 6)
 GPS_UTC_OFFSET = 18
 DEG_TO_RAD = np.pi / 180
+
+# NTRIP credentials
+server = 'rtk2go.com'
+port = 2101
+mountpoint = 'EMLIDHOME1'
+user = 'krupalhi@ualberta.ca'
+password = 'none'
 
 
 class Ublox:
@@ -34,6 +44,7 @@ class Ublox:
             save_path, f"ublox_data_{gps_port[-1:]}.csv") if save_path else None
         self._rawbuffer = Queue()
         self._filebuffer = Queue()  # Use a queue for thread-safe data transfer
+        self._ntrip_data_queue = Queue()
         self._save_thread = None
 
         if self._save_data and self._save_path:
@@ -49,9 +60,21 @@ class Ublox:
     def start(self):
         self._serial = serial.Serial(self.gps_port, self.baud_rate, timeout=1)
         self.ubr = UBXReader(self._serial, protfilter=7)
+        client = GNSSNTRIPClient()
+        client.run(
+            server=server,
+            port=port,
+            mountpoint=mountpoint,
+            datatype='RTCM',
+            ntripuser=user,
+            ntrippassword=password,
+            ggainterval=60,
+            output=self._ntrip_data_queue,
+        )
         self.running = True
         self.schedule_update()
         self.parse_thread()
+        self.ntrip_thread = threading.Thread(target=self.read_ntrip)
         if self._save_data:
             self.start_saving_thread()
 
@@ -214,12 +237,16 @@ class Ublox:
                             "lat": parsed_data.lat,
                             "lon": parsed_data.lon,
                             "alt": parsed_data.alt,
+                            "diffStation": parsed_data.diffStation,
                         })
 
                         self._status["nvSat"] = parsed_data.numSV
 
                     elif msg_type == "GNVTG":
                         self._current_data["azimuth"] = parsed_data.cogt
+                    elif msg_type == "RXM-RTCM":
+                        self._status['rtcm_crc'] = parsed_data.crcFailed
+                        self._status['rtcm_msg'] = parsed_data.msgUsed
 
                 if all(self._current_data.get(k) is not None for k in self._current_data.keys()):
                     self._last_data = self._current_data.copy()
@@ -238,6 +265,22 @@ class Ublox:
                     self._rawbuffer.put(parsed_data)
             except Exception as e:
                 print(f"GPS Read Error: {e}")
+
+    def read_ntrip(self):
+        while self.running:
+            try:
+                if not self._ntrip_data_queue.empty():
+                    raw_data = self._ntrip_data_queue.get()
+                    self._serial.write(raw_data)
+                    print(f"Sent {len(raw_data)} bytes to serial port")
+                    # if isinstance(data, bytes):
+                    #     rtcm = RTCMReader(io.BytesIO(data))
+                    #     for msg in rtcm:
+                    #         if msg.identity == 1005:
+                    #             # Process RTCM message
+                    #             pass
+            except Exception as e:
+                print(f"NTRIP Read Error: {e}")
 
     def get_last_data(self):
         return self._last_data
@@ -267,13 +310,14 @@ class Ublox:
 
 
 if __name__ == "__main__":
-    gps = Ublox(gps_port="/dev/ttyACM0", fusion=False, save_data=True, save_path="test")
+    gps = Ublox(gps_port="/dev/ttyACM0", fusion=False,
+                save_data=True, save_path="test")
     gps.start()
     while True:
         try:
             print(gps.get_last_data())
         except KeyboardInterrupt:
             break
-    
+
     # time.sleep(30)
     gps.stop()

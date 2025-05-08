@@ -10,9 +10,11 @@ gps_template = {
     "lon": None,
     "alt": None,
     "azimuth": None,
+    "diffStation": None
 }
 
 imu_template = {
+    "imutime": None,
     "roll": None,       # Angles (in radians)
     "pitch": None,
     "yaw": None,
@@ -37,13 +39,15 @@ status_template = {
     "rollAcc": 0,
     "pitchAcc": 0,
     "yawAcc": 0,
+    "rtcm_msg": 0,
+    "rtcm_crc": 0,
 }
 
 calib_status_template = {
-    "gyroX": "Not Calibrated",
-    "gyroY": "Not Calibrated",
-    "gyroZ": "Not Calibrated",
-    "accX": "Not Calibrated",
-    "accY": "Not Calibrated",
-    "accZ": "Not Calibrated",
+    "gyroX_calib": "Not Calibrated",
+    "gyroY_calib": "Not Calibrated",
+    "gyroZ_calib": "Not Calibrated",
+    "accX_calib": "Not Calibrated",
+    "accY_calib": "Not Calibrated",
+    "accZ_calib": "Not Calibrated",
 }
