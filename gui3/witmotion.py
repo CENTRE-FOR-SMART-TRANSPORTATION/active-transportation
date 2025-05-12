@@ -15,7 +15,7 @@ DEG_TO_RAD = np.pi / 180
 
 class WitMotion(QObject):
     lastData = Signal(dict)
-    
+
     def __init__(self, imu_port, baud_rate, save_data=False, save_path=None):
         super().__init__()
         self.serial = None
@@ -42,14 +42,18 @@ class WitMotion(QObject):
 
     def start(self):
         """Start reading from the IMU"""
-        self.serial = serial.Serial(self.imu_port, self.baud_rate, timeout=0.01)
+        self.serial = serial.Serial(
+            self.imu_port, self.baud_rate, timeout=0.01)
         self.running = True
-        self._update_thread = threading.Thread(target=self.read_raw, daemon=True)
-        self._parse_thread = threading.Thread(target=self.parse_sensor_data, daemon=True)
+        self._update_thread = threading.Thread(
+            target=self.read_raw, daemon=True)
+        self._parse_thread = threading.Thread(
+            target=self.parse_sensor_data, daemon=True)
         self._update_thread.start()
         self._parse_thread.start()
         if self._save_data:
-            self._save_thread = threading.Thread(target=self.save_data_thread, daemon=True)
+            self._save_thread = threading.Thread(
+                target=self.save_data_thread, daemon=True)
             self._save_thread.start()
 
     def stop(self):
@@ -66,7 +70,8 @@ class WitMotion(QObject):
         while self.running:
             try:
                 if count == 0:
-                    data = self.serial.read_until(b"U")   # Try reading fixed packet size
+                    # Try reading fixed packet size
+                    data = self.serial.read_until(b"U")
                     count += 1
                 else:
                     data = self.serial.read(11)
@@ -138,7 +143,7 @@ class WitMotion(QObject):
         while self.running:
             try:
                 s = self._rawbuffer.get(timeout=1)
-		
+
                 # Store timestamp once for efficiency
                 now = datetime.datetime.now()
                 epoch_time = now.timestamp() * 1000
@@ -170,14 +175,14 @@ class WitMotion(QObject):
                         # result[2] = (result[2] + 360) % 360
                         self._current_data.update(
                             dict(zip(data_keys[key], result)))
-		
-		
+
                 # print(self._current_data)
                 if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
-                    temp = {k: str(v) if isinstance(v, (int, float)) else v for k, v in self._last_data.items()}
-                    self.lastData.emit(temp)
+                    self._last_data = {k: str(v) if isinstance(
+                        v, (int, float)) else v for k, v in self._last_data.items()}
+                    self.lastData.emit(self._last_data)
 
                     if self._save_data:
                         self._filebuffer.put(self._last_data)
@@ -185,23 +190,26 @@ class WitMotion(QObject):
             except Exception as e:
                 print(f"IMU Read Error: {e!r}")
 
-
     def save_data_thread(self):
         while self.running:
             try:
                 data = self._filebuffer.get(timeout=1)
                 with open(self._save_path, "a") as f:
-                    f.write(",".join(map(str, data.values())) + "\n")
+                    f.write(",".join(data.values()) + "\n")
             except Empty:
                 continue  # Just wait again
             except Exception as e:
                 print(f"Error writing to file: {e!r}")
 
-
     def save_data(self):
-        pass
-        
-       
+        try:
+            with open(self._save_path, "a") as f:
+                for data in self._filebuffer:
+                    f.write(",".join(data.values()) + "\n")
+            self._filebuffer.clear()
+        except Exception as e:
+            print(f"Error writing to file: {e}")
+
     def get_last_data(self):
         """Return the last complete data packet"""
         # self.lastData.emit(self._last_data)
