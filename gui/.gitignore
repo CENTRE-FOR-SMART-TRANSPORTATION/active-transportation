@@ -80,3 +80,6 @@ CMakeLists.txt.user*
 .rcc/
 .uic/
 /build*/
+__pycache__/
+*.vscode/
+gui.pyproject.user

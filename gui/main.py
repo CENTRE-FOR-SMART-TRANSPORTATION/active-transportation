@@ -2,7 +2,7 @@
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow
 # this is the auto-generated file from Qt Designer
-from mainwindow import MainWindow
+from src.mainwindow import MainWindow
 import logging
 logging.basicConfig(level=logging.DEBUG)  # or INFO
 logger = logging.getLogger(__name__)

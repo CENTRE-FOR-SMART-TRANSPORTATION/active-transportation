@@ -9,6 +9,7 @@ from pyubx2 import UBXReader
 from scipy.spatial.transform import Rotation as R
 from datetime import datetime, timedelta, timezone, date
 from PySide6.QtCore import QObject, Signal
+import pygpsclient
 
 GPS_EPOCH = datetime(1980, 1, 6)
 GPS_UTC_OFFSET = 18

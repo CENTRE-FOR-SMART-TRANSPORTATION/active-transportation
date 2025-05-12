@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1436</width>
+    <width>1454</width>
     <height>880</height>
    </rect>
   </property>
@@ -93,13 +93,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -134,13 +134,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -162,13 +162,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -216,13 +216,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -244,13 +244,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -272,13 +272,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -300,13 +300,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -380,13 +380,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -408,13 +408,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -443,13 +443,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -471,13 +471,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -499,13 +499,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -592,13 +592,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -633,13 +633,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -661,13 +661,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -696,13 +696,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -750,13 +750,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -778,13 +778,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -832,13 +832,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -854,7 +854,7 @@
                <property name="title">
                 <string>GPS Time</string>
                </property>
-               <widget class="QLabel" name="labelTimeGPS">
+               <widget class="QLabel" name="labelSystemGPS">
                 <property name="geometry">
                  <rect>
                   <x>10</x>
@@ -867,7 +867,7 @@
                  <string>Time</string>
                 </property>
                </widget>
-               <widget class="QLabel" name="labelEpochGPS">
+               <widget class="QLabel" name="labelGPSTime">
                 <property name="geometry">
                  <rect>
                   <x>10</x>
@@ -877,7 +877,7 @@
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Epoch</string>
+                 <string>GPS</string>
                 </property>
                </widget>
                <widget class="QPlainTextEdit" name="systemTimeGPS">
@@ -893,13 +893,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -908,7 +908,7 @@
                  <string>0</string>
                 </property>
                </widget>
-               <widget class="QPlainTextEdit" name="epochTimeGPS">
+               <widget class="QPlainTextEdit" name="GPSTime">
                 <property name="geometry">
                  <rect>
                   <x>70</x>
@@ -927,13 +927,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -962,13 +962,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1003,13 +1003,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1057,13 +1057,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1085,13 +1085,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1133,13 +1133,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1174,13 +1174,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1228,13 +1228,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1263,13 +1263,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1304,13 +1304,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1358,13 +1358,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1393,13 +1393,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1434,13 +1434,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1488,13 +1488,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1549,13 +1549,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1583,13 +1583,13 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarAsNeeded</enum>
                 </property>
                 <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                 <enum>QPlainTextEdit::NoWrap</enum>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -1701,13 +1701,95 @@
     <item row="0" column="1">
      <layout class="QVBoxLayout" name="layout_setting">
       <property name="sizeConstraint">
-       <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+       <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <item>
        <layout class="QGridLayout" name="gridLayout_2">
         <property name="sizeConstraint">
-         <enum>QLayout::SizeConstraint::SetFixedSize</enum>
+         <enum>QLayout::SetDefaultConstraint</enum>
         </property>
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="ethernet">
+          <property name="title">
+           <string>Ethernet Connection</string>
+          </property>
+          <widget class="QPushButton" name="btnPandarView">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>144</y>
+             <width>221</width>
+             <height>25</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>PandarView2</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="ethernetPort">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>30</y>
+             <width>221</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="ethernetLabel">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>30</y>
+             <width>81</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Port</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="btnPtpd">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>104</y>
+             <width>221</width>
+             <height>25</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Set PTPD</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="btnLidarStatus">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>184</y>
+             <width>221</width>
+             <height>25</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Open Lidar Status Browser</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="btnIPV4">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>64</y>
+             <width>221</width>
+             <height>25</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Set IPV4 Address</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
         <item row="0" column="0">
          <widget class="QGroupBox" name="serial_connect">
           <property name="sizePolicy">
@@ -1728,7 +1810,7 @@
           <widget class="QComboBox" name="gpsSerial">
            <property name="geometry">
             <rect>
-             <x>80</x>
+             <x>88</x>
              <y>50</y>
              <width>101</width>
              <height>22</height>
@@ -1767,7 +1849,7 @@
           <widget class="QLabel" name="gpsLabel">
            <property name="geometry">
             <rect>
-             <x>110</x>
+             <x>118</x>
              <y>30</y>
              <width>41</width>
              <height>17</height>
@@ -1796,7 +1878,7 @@
            </property>
            <property name="geometry">
             <rect>
-             <x>80</x>
+             <x>88</x>
              <y>80</y>
              <width>101</width>
              <height>25</height>
@@ -1908,7 +1990,7 @@
           <widget class="QComboBox" name="baudIMU">
            <property name="geometry">
             <rect>
-             <x>200</x>
+             <x>208</x>
              <y>80</y>
              <width>101</width>
              <height>25</height>
@@ -1988,7 +2070,7 @@
           <widget class="QLabel" name="imuLabel">
            <property name="geometry">
             <rect>
-             <x>230</x>
+             <x>238</x>
              <y>30</y>
              <width>41</width>
              <height>17</height>
@@ -2001,7 +2083,7 @@
           <widget class="QComboBox" name="imuSerial">
            <property name="geometry">
             <rect>
-             <x>200</x>
+             <x>208</x>
              <y>50</y>
              <width>101</width>
              <height>22</height>
@@ -2024,7 +2106,7 @@
           <widget class="QComboBox" name="imuType">
            <property name="geometry">
             <rect>
-             <x>200</x>
+             <x>208</x>
              <y>110</y>
              <width>101</width>
              <height>22</height>
@@ -2034,7 +2116,7 @@
           <widget class="QComboBox" name="gpsType">
            <property name="geometry">
             <rect>
-             <x>80</x>
+             <x>88</x>
              <y>110</y>
              <width>101</width>
              <height>22</height>
@@ -2054,86 +2136,111 @@
             <string>Open Recording Folder</string>
            </property>
           </widget>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="title">
-           <string>Ethernet Connection</string>
-          </property>
-          <widget class="QPushButton" name="btnPandarView">
+          <widget class="QPushButton" name="ntrip_connection">
            <property name="geometry">
             <rect>
-             <x>80</x>
-             <y>144</y>
-             <width>221</width>
+             <x>140</x>
+             <y>212</y>
+             <width>171</width>
              <height>25</height>
             </rect>
            </property>
            <property name="text">
-            <string>PandarView2</string>
+            <string>NTRIP Connection</string>
            </property>
           </widget>
-          <widget class="QComboBox" name="ethernetPort">
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QGroupBox" name="bluetooth">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>175</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Bluetooth Connection</string>
+          </property>
+          <widget class="QPushButton" name="BLEConnectionButton">
            <property name="geometry">
             <rect>
-             <x>80</x>
-             <y>30</y>
+             <x>140</x>
+             <y>73</y>
+             <width>80</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Start</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="BLETerminationButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="geometry">
+            <rect>
+             <x>230</x>
+             <y>73</y>
+             <width>80</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Stop</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="saveButton_2">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>73</y>
+             <width>141</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Save Data</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="bleDevice">
+           <property name="geometry">
+            <rect>
+             <x>89</x>
+             <y>40</y>
              <width>221</width>
              <height>22</height>
             </rect>
            </property>
           </widget>
-          <widget class="QLabel" name="ethernetLabel">
+          <widget class="QLabel" name="bleDeviceLabel">
            <property name="geometry">
             <rect>
              <x>10</x>
-             <y>30</y>
+             <y>40</y>
              <width>81</width>
              <height>20</height>
             </rect>
            </property>
            <property name="text">
-            <string>Port</string>
+            <string>Device</string>
            </property>
           </widget>
-          <widget class="QPushButton" name="btnPtpd">
+          <widget class="QPushButton" name="refreshBtn">
            <property name="geometry">
             <rect>
-             <x>80</x>
+             <x>140</x>
              <y>104</y>
-             <width>221</width>
+             <width>171</width>
              <height>25</height>
             </rect>
            </property>
            <property name="text">
-            <string>Set PTPD</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="btnLidarStatus">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>184</y>
-             <width>221</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Open Lidar Status Browser</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="btnIPV4">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>64</y>
-             <width>221</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Set IPV4 Address</string>
+            <string>Refresh List</string>
            </property>
           </widget>
          </widget>

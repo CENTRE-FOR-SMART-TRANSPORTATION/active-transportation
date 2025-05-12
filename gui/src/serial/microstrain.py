@@ -1,11 +1,10 @@
 import os
 import sys
 import mscl
-import threading
 import datetime
-from queue import Queue
-import ast
+import threading
 import datatypes as dt
+from queue import Queue
 from PySide6.QtCore import Signal, QObject
 
 

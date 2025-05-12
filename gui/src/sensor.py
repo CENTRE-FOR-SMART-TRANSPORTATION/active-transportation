@@ -10,9 +10,10 @@ import datetime
 import shutil
 import os
 
-from ui_sensor import Ui_Sensor
-from witmotion import WitMotion
-from ublox import Ublox
+from ui.ui_sensor import Ui_Sensor
+from serial.microstrain import Microstrain
+from serial.witmotion import WitMotion
+from serial.ublox import Ublox
 
 
 class Sensor(QWidget):

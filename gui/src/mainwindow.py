@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QFileDialog, QInputDialog, QMessageBox, QLineEdit
 from PySide6.QtCore import QSettings
 from PySide6.QtGui import QAction
-from ui_mainwindow import Ui_MainWindow  # Auto-generated from Qt Designer
+from ui.ui_mainwindow import Ui_MainWindow  # Auto-generated from Qt Designer
 from sensor import Sensor  # Your custom QWidget for GPS sensor tabs
 import os
 
@@ -10,6 +10,13 @@ class MainWindow(QMainWindow):
     pandarview_path = "/home/Downloads/PandarView2"
     recording_path = "/home/Desktop/AT"
     password = ""
+    ntrip_details = {
+        "username": "",
+        "password": "",
+        "ip": "",
+        "port": "",
+        "mountpoint": ""
+    }
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -34,13 +41,16 @@ class MainWindow(QMainWindow):
             "pandarview_path", MainWindow.pandarview_path)
         MainWindow.recording_path = settings.value(
             "recording_path", MainWindow.recording_path)
-        MainWindow.password = settings.value("password", "")
+        MainWindow.password = settings.value("password", MainWindow.password)
+        MainWindow.ntrip_details = settings.value(
+            "ntrip_details", MainWindow.ntrip_details)
 
     def save_settings(self):
         settings = QSettings("AT", "ATgui")
         settings.setValue("pandarview_path", MainWindow.pandarview_path)
         settings.setValue("recording_path", MainWindow.recording_path)
         settings.setValue("password", MainWindow.password)
+        settings.setValue("ntrip_details", MainWindow.ntrip_details)
 
     def close_tab(self, index):
         reply = QMessageBox.question(
@@ -85,3 +95,6 @@ class MainWindow(QMainWindow):
             self.save_settings()
         else:
             print("Password input cancelled or empty.")
+
+    def set_ntrip_details(self):
+        

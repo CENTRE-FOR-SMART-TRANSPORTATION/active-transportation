@@ -121,7 +121,7 @@ class WitMotion:
             s = self.serial.read_until(b"U")  # Read one IMU packet (11 bytes)
             if len(s) < 11:
                 return  # Ignore incomplete packets
-
+            print(s)
             # Store timestamp once for efficiency
             now = datetime.datetime.now()
             epoch_time = now.timestamp() * 1000
@@ -189,7 +189,7 @@ class WitMotion:
 
 
 if __name__ == "__main__":
-    imu = WitMotion(imu_port='/dev/ttyUSB1', baud_rate=115200,
+    imu = WitMotion(imu_port='/dev/ttyACM0', baud_rate=115200,
                     save_data=True, save_path="test")
     imu.start()
     try:

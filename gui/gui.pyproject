@@ -1,0 +1,13 @@
+{
+    "files": [
+        "main.py",
+        "src/mainwindow.py"
+        "src/sensor.py",
+        "src/serial/datatypes.py",
+        "src/serial/microstrain.py",
+        "src/serial/ublox.py",
+        "src/serial/witmotion.py",
+        "src/ui/ui_mainwindow.py",
+        "src/ui/ui_sensor.py",
+    ]
+}
