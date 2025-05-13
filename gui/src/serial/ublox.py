@@ -1,4 +1,5 @@
 import os
+import time
 import serial
 import threading
 import numpy as np
@@ -74,8 +75,8 @@ class Ublox(QObject):
     def stop(self):  # Ensure any remaining data is saved
         self.running = False
 
-        if self.client:
-            self.client.stop()
+        if self._ntrip_client:
+            self._ntrip_client.stop()
 
         if isinstance(self._raw_data_thread, threading.Thread) and self._raw_data_thread.is_alive():
             self._raw_data_thread.join()
@@ -96,8 +97,8 @@ class Ublox(QObject):
             self.save_data()
 
     def start_ntrip_thread(self):
-        self.client = GNSSNTRIPClient(app=self)
-        self.client.run(
+        self._ntrip_client = GNSSNTRIPClient(app=self)
+        self._ntrip_client.run(
             server=self._ntrip.server,
             port=self._ntrip.port,
             mountpoint=self._ntrip.mountpoint,
@@ -123,9 +124,9 @@ class Ublox(QObject):
 
     def stop_ntrip(self):
         self._ntrip['start'] = False
-        if self.client:
-            self.client.stop()
-            self.client = None
+        if self._ntrip_client:
+            self._ntrip_client.stop()
+            self._ntrip_client = None
         if self.ntrip_thread:
             self.ntrip_thread.join()
             self.ntrip_thread = None
@@ -264,12 +265,12 @@ class Ublox(QObject):
                         self._status['rtcm_crc'] = parsed_data.crcFailed
                         self._status['rtcm_msg'] = parsed_data.msgUsed
 
-                    elif msg_type in ["UBX-NAV-HPPOSLLH"]:
+                    elif msg_type in ["NAV-HPPOSECEF"]:
                         self._current_data.update({
                             "3D Acc": parsed_data.pAcc / 1000,  # m
                         })
 
-                    elif msg_type in ["UBX-NAV-POSECEF"]:
+                    elif msg_type in ["NAV-HPPOSLLH"]:
                         self._current_data.update({
                             "2D hAcc": parsed_data.hAcc / 1000,  # m
                             "2D vAcc": parsed_data.vAcc / 1000,  # m
@@ -278,7 +279,7 @@ class Ublox(QObject):
                 if all(self._current_data.get(k) is not None for k in self._current_data.keys()):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
-                    if (self.client is None and
+                    if (self._ntrip_client is None and
                         self._ntrip['start'] and
                         not self._last_data['lat'] == '' and
                         not self._last_data['lon'] == '' and
@@ -348,12 +349,14 @@ class Ublox(QObject):
 
 
 if __name__ == "__main__":
-    gps = Ublox(gps_port="/dev/ttyACM0", fusion=False,
+    gps = Ublox(gps_port="COM4", fusion=False,
                 save_data=True, save_path="test")
     gps.start()
     while True:
         try:
             print(gps.get_last_data())
+            time.sleep(1)
+            # pass
         except KeyboardInterrupt:
             break
 

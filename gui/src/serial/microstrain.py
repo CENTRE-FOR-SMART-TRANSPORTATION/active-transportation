@@ -213,7 +213,7 @@ class Microstrain(QObject):
 
 
 if __name__ == "__main__":
-    imu = Microstrain(imu_port="/dev/ttyACM0", baud_rate=115200,
+    imu = Microstrain(imu_port="/dev/ttyACM1", baud_rate=115200,
                       save_data=True, save_path="test")
     imu.start()
     try:

@@ -118,21 +118,6 @@ class WitMotion(QObject):
         # print(data)
         return np.array(struct.unpack("<hhh", data[1:7])) / 32768.0 * scale_factor
 
-    # def _get_acceleration(self, data):
-    #     """Returns acceleration with gravity removed"""
-    #     acc = self._parse_sensor_data(data, ord("Q"), 16.0)
-    #     return acc - np.array([0, 0, GRAVITY]) if acc is not None else None
-
-    # def _get_gyro(self, data):
-    #     """Returns gyroscope values in radians per second"""
-    #     gyro = self._parse_sensor_data(data, ord("R"), 2000.0)
-    #     return gyro * DEG_TO_RAD if gyro is not None else None
-
-    # def _get_angle(self, data):
-    #     """Returns angles in radians"""
-    #     angle = self._parse_sensor_data(data, ord("S"), 180.0)
-    #     return angle * DEG_TO_RAD if angle is not None else None
-
     def _get_acceleration(self, data):
         return self._parse_sensor_data_helper(data, ord("Q"), 16.0)
 
@@ -164,7 +149,7 @@ class WitMotion(QObject):
                 epoch_time = now.timestamp() * 1000
                 formatted_time = now.strftime("%Y-%m-%d %H:%M:%S.%f")
                 self._current_data.update(
-                    {"systemepoch": epoch_time, "systemtime": formatted_time})
+                    {"systemepoch": epoch_time, "systemtime": formatted_time, "imutime": 0})
 
                 # Extract sensor data
                 data_extractors = {
@@ -242,7 +227,7 @@ if __name__ == "__main__":
     imu.start()
     try:
         while True:
-            # print(imu.get_last_data())
+            print(imu.get_last_data())
             pass
     except KeyboardInterrupt:
         imu.stop()
