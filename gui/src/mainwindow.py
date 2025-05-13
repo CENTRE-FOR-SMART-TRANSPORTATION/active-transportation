@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QMainWindow, QFileDialog, QInputDialog, QMessageBox, QLineEdit
 from PySide6.QtCore import QSettings
 from PySide6.QtGui import QAction
-from ui.ui_mainwindow import Ui_MainWindow  # Auto-generated from Qt Designer
-from sensor import Sensor  # Your custom QWidget for GPS sensor tabs
+from src.ui.ui_mainwindow import Ui_MainWindow  # Auto-generated from Qt Designer
+from src.sensor import Sensor  # Your custom QWidget for GPS sensor tabs
 import os
 
 
@@ -96,5 +96,4 @@ class MainWindow(QMainWindow):
         else:
             print("Password input cancelled or empty.")
 
-    def set_ntrip_details(self):
-        
+    # def set_ntrip_details(self):

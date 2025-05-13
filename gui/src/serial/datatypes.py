@@ -10,9 +10,19 @@ gps_template = {
     "lon": None,
     "alt": None,
     "azimuth": None,
+    "sep": None,
+    "fix": None,
+    "sip": None,
+    "hdop": None,
+    "diffAge": None,
+    "diffStation": None,
+    "2D hAcc": None,
+    "2D vAcc": None,
+    "3D Acc": None,
 }
 
 imu_template = {
+    "imutime": None,
     "roll": None,       # Angles (in radians)
     "pitch": None,
     "yaw": None,
@@ -32,18 +42,22 @@ status_template = {
     "fusionMode": 0,
     "imuStatus": 0,
     "gpsFix": 0,
-    "nvSat": 0,
-    "gpsAcc (H, V)": (0, 0),
+    "numSV": 0,
+    "HDOP": 0,
+    "VDOP": 0,
+    "PDOP": 0,
     "rollAcc": 0,
     "pitchAcc": 0,
     "yawAcc": 0,
+    "rtcm_msg": 0,
+    "rtcm_crc": 0,
 }
 
 calib_status_template = {
-    "gyroX": "Not Calibrated",
-    "gyroY": "Not Calibrated",
-    "gyroZ": "Not Calibrated",
-    "accX": "Not Calibrated",
-    "accY": "Not Calibrated",
-    "accZ": "Not Calibrated",
+    "gyroX_calib": "Not Calibrated",
+    "gyroY_calib": "Not Calibrated",
+    "gyroZ_calib": "Not Calibrated",
+    "accX_calib": "Not Calibrated",
+    "accY_calib": "Not Calibrated",
+    "accZ_calib": "Not Calibrated",
 }

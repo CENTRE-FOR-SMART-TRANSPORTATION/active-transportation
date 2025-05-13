@@ -1,11 +1,11 @@
-import struct
+import os
 import serial
+import struct
+import datetime
 import threading
 import numpy as np
-import datetime
-import os
-import datatypes as dt
 from queue import Queue, Empty
+import src.serial.datatypes as dt
 from PySide6.QtCore import Signal, QObject
 
 
@@ -18,11 +18,13 @@ class WitMotion(QObject):
 
     def __init__(self, imu_port, baud_rate, save_data=False, save_path=None):
         super().__init__()
+
         self.serial = None
         self.running = False
         self.imu_port = imu_port
         self.baud_rate = baud_rate
         self.template = {**dt.time_template, **dt.imu_template}
+
         self._current_data = self.template.copy()
         self._last_data = self.template.copy()
         self._save_data = save_data
@@ -45,12 +47,15 @@ class WitMotion(QObject):
         self.serial = serial.Serial(
             self.imu_port, self.baud_rate, timeout=0.01)
         self.running = True
-        self._update_thread = threading.Thread(
+
+        self._raw_data_thread = threading.Thread(
             target=self.read_raw, daemon=True)
+        self._raw_data_thread.start()
+
         self._parse_thread = threading.Thread(
             target=self.parse_sensor_data, daemon=True)
-        self._update_thread.start()
         self._parse_thread.start()
+
         if self._save_data:
             self._save_thread = threading.Thread(
                 target=self.save_data_thread, daemon=True)
@@ -58,12 +63,22 @@ class WitMotion(QObject):
 
     def stop(self):
         """Stop reading from the IMU"""
-        if self._save_data:
-            self.save_data()
-
         self.running = False
+
+        if isinstance(self._raw_data_thread, threading.Thread) and self._raw_data_thread.is_alive():
+            self._raw_data_thread.join()
+
+        if isinstance(self._parse_thread, threading.Thread) and self._parse_thread.is_alive():
+            self._parse_thread.join()
+
+        if isinstance(self._save_thread, threading.Thread) and self._save_thread.is_alive():
+            self._save_thread.join()
+
         if self.serial and self.serial.is_open:
             self.serial.close()
+
+        if self._save_data:
+            self.save_data()
 
     def read_raw(self):
         count = 0
@@ -180,6 +195,7 @@ class WitMotion(QObject):
                 if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
+                    
                     self._last_data = {k: str(v) if isinstance(
                         v, (int, float)) else v for k, v in self._last_data.items()}
                     self.lastData.emit(self._last_data)

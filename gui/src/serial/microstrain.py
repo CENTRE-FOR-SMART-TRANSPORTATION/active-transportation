@@ -3,8 +3,8 @@ import sys
 import mscl
 import datetime
 import threading
-import datatypes as dt
 from queue import Queue
+import src.serial.datatypes as dt
 from PySide6.QtCore import Signal, QObject
 
 
