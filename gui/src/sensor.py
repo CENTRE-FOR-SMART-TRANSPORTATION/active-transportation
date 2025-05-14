@@ -1,5 +1,3 @@
-# sensor.py
-
 from PySide6.QtWidgets import QWidget, QMessageBox
 from PySide6.QtCore import QProcess, QThread, QUrl, Slot
 from PySide6.QtSerialPort import QSerialPortInfo
@@ -10,10 +8,10 @@ import datetime
 import shutil
 import os
 
-from src.ui.ui_sensor import Ui_Sensor
 from src.serial.microstrain import Microstrain
 from src.serial.witmotion import WitMotion
 from src.serial.ublox import Ublox
+from src.ui.ui_sensor import Ui_Sensor
 
 
 class Sensor(QWidget):
@@ -142,17 +140,25 @@ class Sensor(QWidget):
         self.ui.longitude.setPlainText(data.get("lon", ""))
         self.ui.altitude.setPlainText(data.get("alt", ""))
         self.ui.heading.setPlainText(data.get("azimuth", ""))
+        self.ui.fix.setPlainText(data.get("fix", ""))
+
+        self.ui.diffAge.setPlainText(data.get("diffage", ""))
+        self.ui.diffStation.setPlainText(data.get("diffstation", ""))
+
+        self.ui.hAccu.setPlainText(data.get("2D hAcc", ""))
+        self.ui.vAccu.setPlainText(data.get("2D vAcc", ""))
+        self.ui.acc3D.setPlainText(data.get("3D Acc", ""))
+        self.ui.GPSFix.setPlainText(data.get("gpsFix", ""))
+        self.ui.numSat.setPlainText(data.get("numSV", ""))
+        self.ui.HDOP.setPlainText(data.get("HDOP", ""))
+        self.ui.VDOP.setPlainText(data.get("VDOP", ""))
+        self.ui.PDOP.setPlainText(data.get("PDOP", ""))
         self.ui.fusionMode.setPlainText(data.get("fusionMode", ""))
         self.ui.imuStatus.setPlainText(data.get("imuStatus", ""))
-        self.ui.GPSFix.setPlainText(data.get("gpsFix", ""))
-        self.ui.numSat.setPlainText(data.get("nvSat", ""))
-        self.ui.GPSAccuH.setPlainText(data.get("gpsAcc", [""])[
-                                      0])  # Handle list safely
-        self.ui.GPSAccuV.setPlainText(data.get("gpsAcc", ["", ""])[
-                                      1])  # Handle list safely
         self.ui.rollAccu.setPlainText(data.get("rollAcc", ""))
         self.ui.pitchAccu.setPlainText(data.get("pitchAcc", ""))
         self.ui.yawAccu.setPlainText(data.get("yawAcc", ""))
+
         self.ui.calibGyroX.setPlainText(data.get("gyroX_calib", ""))
         self.ui.calibGyroY.setPlainText(data.get("gyroY_calib", ""))
         self.ui.calibGyroZ.setPlainText(data.get("gyroZ_calib", ""))
@@ -190,10 +196,12 @@ class Sensor(QWidget):
                 self.gps = Ublox(gpsport, gpsbaud, fusion=True, save_data=save,
                                  save_path=recording_path)
                 self.gps.moveToThread(self.gpsthread)
+                self.gps.set_ntrip_settings(self.mainWindow.ntrip_details)
 
                 self.gpsthread.started.connect(self.gps.start)
                 self.gpsthread.finished.connect(self.gps.stop)
                 self.gps.lastData.connect(self.displayGPSData)
+                self.ui.ntrip_connection.connect(self.gps.ntrip_connect)
 
                 self.gpsthread.start()
             elif gpstype == "2BPro":
@@ -226,7 +234,15 @@ class Sensor(QWidget):
 
                 self.imuthread.start()
             elif imutype == "Microstrain CV7":
-                pass
+                self.microstrain = Microstrain(
+                    imuport, imubaud, save, recording_path)
+                self.microstrain.moveToThread(self.imuthread)
+
+                self.imuthread.started.connect(self.microstrain.start)
+                self.imuthread.finished.connect(self.microstrain.stop)
+                self.microstrain.lastData.connect(self.displayIMUData)
+
+                self.imuthread.start()
             else:
                 print("IMU Type not found")
                 imu = False
@@ -248,6 +264,9 @@ class Sensor(QWidget):
                 self.gps.stop()
                 self.gpsthread.quit()
                 self.gpsthread.wait()
+                if self.ui.ntrip_connection.isSignalConnected():
+                    self.ui.ntrip_connection.disconnect()
+
                 del self.gps
                 del self.gpsthread
 

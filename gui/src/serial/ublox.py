@@ -7,13 +7,29 @@ from pyubx2 import UBXReader
 from queue import Queue, Empty
 import src.serial.datatypes as dt
 from pygnssutils import GNSSNTRIPClient
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QObject, Signal, Slot
 from datetime import datetime, timezone, date
 from scipy.spatial.transform import Rotation as R
 
 GPS_EPOCH = datetime(1980, 1, 6)
 GPS_UTC_OFFSET = 18
 DEG_TO_RAD = np.pi / 180
+FIX_FLAGS = {
+    0: "No Fix",
+    1: "2D/3D GNSS fix",
+    2: "Differential GNSS fix",
+    4: "RTK Fixed",
+    5: "RTK Float",
+    6: "GNSS Dead Reckoning",
+}
+GNSS_FIX_FLAGS = {
+    0: "No Fix",
+    1: "Dead Reckoning",
+    2: "2D GNSS fix",
+    3: "3D GNSS fix",
+    4: "GNSS + Dead Reckoning",
+    5: "Time only",
+}
 
 
 class Ublox(QObject):
@@ -42,9 +58,11 @@ class Ublox(QObject):
         self._rawbuffer = Queue()
         self._filebuffer = Queue()  # Use a queue for thread-safe data transfer
         self._ntrip_data = Queue()
+        self._raw_data_thread = None
+        self._parse_thread = None
         self._save_thread = None
         self._ntrip_client = None
-        self._ntrip = {"start": False}
+        self._ntrip_settings = {"start": False}
 
         if self._save_data and self._save_path:
             try:
@@ -96,15 +114,26 @@ class Ublox(QObject):
         if self._save_data:
             self.save_data()
 
-    def start_ntrip_thread(self):
+    @Slot()
+    def ntrip_connect(self):
+        if self._ntrip_client is None:
+            self._ntrip_settings['start'] = True
+            self._start_ntrip_thread()
+        else:
+            self._stop_ntrip()
+
+    def set_ntrip_settings(self, settings):
+        self._ntrip_settings = settings
+
+    def _start_ntrip_thread(self):
         self._ntrip_client = GNSSNTRIPClient(app=self)
         self._ntrip_client.run(
-            server=self._ntrip.server,
-            port=self._ntrip.port,
-            mountpoint=self._ntrip.mountpoint,
+            server=self._ntrip_settings.server,
+            port=self._ntrip_settings.port,
+            mountpoint=self._ntrip_settings.mountpoint,
             datatype='RTCM',
-            ntripuser=self._ntrip.user,
-            ntrippassword=self._ntrip.password,
+            ntripuser=self._ntrip_settings.user,
+            ntrippassword=self._ntrip_settings.password,
             ggainterval=1,
             ggamode=0,
             # Possible problem with this. (Also fix in NTRIP Parsing)
@@ -114,20 +143,14 @@ class Ublox(QObject):
         self.ntrip_thread = threading.Thread(target=self.read_ntrip)
         self.ntrip_thread.start()
 
-    def start_ntrip(self, server, port, mountpoint, user, password):
-        self._ntrip['start'] = True
-        self._ntrip['server'] = server
-        self._ntrip['port'] = port
-        self._ntrip['mountpoint'] = mountpoint
-        self._ntrip['user'] = user
-        self._ntrip['password'] = password
-
-    def stop_ntrip(self):
+    def _stop_ntrip(self):
         self._ntrip['start'] = False
-        if self._ntrip_client:
+
+        if isinstance(self.ntrip_thread, GNSSNTRIPClient) and self._ntrip_client._connected:
             self._ntrip_client.stop()
             self._ntrip_client = None
-        if self.ntrip_thread:
+
+        if isinstance(self.ntrip_thread, threading.Thread) and self.ntrip_thread.is_alive():
             self.ntrip_thread.join()
             self.ntrip_thread = None
 
@@ -152,7 +175,7 @@ class Ublox(QObject):
 
                     if msg_type == "NAV-PVT":
                         self._status.update({
-                            "gpsFix": parsed_data.fixType,
+                            "gpsFix": GNSS_FIX_FLAGS[parsed_data.fixType],
                             "HDOP": parsed_data.hAcc / 1000,    # m
                             "VDOP": parsed_data.vAcc / 1000,    # m
                             "PDOP": parsed_data.pDOP / 1000,    # no unit
@@ -280,18 +303,20 @@ class Ublox(QObject):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
                     if (self._ntrip_client is None and
-                        self._ntrip['start'] and
-                        not self._last_data['lat'] == '' and
-                        not self._last_data['lon'] == '' and
-                        self._last_data['fix'] > 0
-                        ):
+                                self._ntrip['start'] and
+                                not self._last_data['lat'] == '' and
+                                not self._last_data['lon'] == '' and
+                                self._last_data['fix'] > 0
+                            ):
                         print('STARTING NTRIP client')
-                        self.start_ntrip_thread()
+                        self._start_ntrip_thread()
 
                     self._last_data = {k: str(v) if isinstance(
                         v, (int, float)) else v for k, v in self._last_data.items()}
                     temp = {**self._last_data, **
                             self._status, **self._calib_status}
+                    temp['fix'] = FIX_FLAGS.get(
+                        temp['fix'], "Unknown")
                     self.lastData.emit(temp)
 
                     if self._save_data:

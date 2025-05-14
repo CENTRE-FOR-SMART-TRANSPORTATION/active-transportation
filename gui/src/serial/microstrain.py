@@ -14,6 +14,7 @@ class Microstrain(QObject):
     def __init__(self, imu_port, baud_rate=115200, save_data=False, save_path=None):
         super().__init__()
 
+        self.running = False
         self.connection = None
         self.node = None
         self.imu_port = imu_port
@@ -27,7 +28,10 @@ class Microstrain(QObject):
             save_path, f"microstrain_data_{imu_port[-1:]}.csv") if save_path else None
         self._raw_data_buffer = Queue()
         self._filebuffer = Queue()
-        self.running = False
+
+        self._save_thread = None
+        self._parse_thread = None
+        self.raw_data_thread = None
 
         if self._save_data and self._save_path:
             try:

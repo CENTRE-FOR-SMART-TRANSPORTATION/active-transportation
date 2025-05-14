@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Starrtracker</string>
+   <string>Active Transportation</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWindow">
@@ -91,6 +91,7 @@
     <addaction name="actionPandarView_Path"/>
     <addaction name="actionRecording_Path"/>
     <addaction name="actionSet_Password"/>
+    <addaction name="actionNTRIP_Configuration"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSettings"/>
@@ -119,6 +120,11 @@
   <action name="actionSet_Password">
    <property name="text">
     <string>Set Password</string>
+   </property>
+  </action>
+  <action name="actionNTRIP_Configuration">
+   <property name="text">
+    <string>NTRIP Configuration</string>
    </property>
   </action>
  </widget>

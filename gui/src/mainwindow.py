@@ -1,22 +1,16 @@
-from PySide6.QtWidgets import QMainWindow, QFileDialog, QInputDialog, QMessageBox, QLineEdit
 from PySide6.QtCore import QSettings
-from PySide6.QtGui import QAction
-from src.ui.ui_mainwindow import Ui_MainWindow  # Auto-generated from Qt Designer
-from src.sensor import Sensor  # Your custom QWidget for GPS sensor tabs
-import os
+from PySide6.QtWidgets import QMainWindow, QFileDialog, QInputDialog, QMessageBox, QLineEdit, QDialog
+
+from src.sensor import Sensor
+from src.ui.ui_mainwindow import Ui_MainWindow
+from src.utils.ntrip_client_config import NtripClientConfig
 
 
 class MainWindow(QMainWindow):
     pandarview_path = "/home/Downloads/PandarView2"
     recording_path = "/home/Desktop/AT"
     password = ""
-    ntrip_details = {
-        "username": "",
-        "password": "",
-        "ip": "",
-        "port": "",
-        "mountpoint": ""
-    }
+    ntrip_details = {}
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -32,6 +26,8 @@ class MainWindow(QMainWindow):
             self.set_pandarview_path)
         self.ui.actionRecording_Path.triggered.connect(self.set_recording_path)
         self.ui.actionSet_Password.triggered.connect(self.set_password)
+        self.ui.actionNTRIP_Configuration.triggered.connect(
+            self.set_ntrip_details)
         self.ui.addSensor.clicked.connect(self.add_sensor_tab)
         self.ui.tabWindow.tabCloseRequested.connect(self.close_tab)
 
@@ -96,4 +92,9 @@ class MainWindow(QMainWindow):
         else:
             print("Password input cancelled or empty.")
 
-    # def set_ntrip_details(self):
+    def set_ntrip_details(self):
+        dialog = NtripClientConfig(settings=MainWindow.ntrip_details)
+        if dialog.exec_() == QDialog.Accepted:
+            settings = dialog.get_settings()
+            MainWindow.ntrip_details = settings
+            self.save_settings()

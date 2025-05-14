@@ -10,9 +10,9 @@ gps_template = {
     "lon": None,
     "alt": None,
     "azimuth": None,
-    "sep": None,
+    "sep": None,    # Geoid separation: difference between ellipsoid and mean sea level
     "fix": None,
-    "sip": None,
+    "sip": None,    # number of satellites in view
     "hdop": None,
     "diffage": None,
     "diffstation": None,

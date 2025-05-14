@@ -33,6 +33,10 @@ class WitMotion(QObject):
         self._rawbuffer = Queue()
         self._filebuffer = Queue()
 
+        self._raw_data_thread = None
+        self._parse_thread = None
+        self._save_thread = None
+
         if self._save_data and self._save_path:
             try:
                 with open(self._save_path, "w") as self._file:
@@ -180,7 +184,7 @@ class WitMotion(QObject):
                 if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
-                    
+
                     self._last_data = {k: str(v) if isinstance(
                         v, (int, float)) else v for k, v in self._last_data.items()}
                     self.lastData.emit(self._last_data)
