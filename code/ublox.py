@@ -1,37 +1,46 @@
 import os
-import io
 import time
 import serial
 import threading
 import numpy as np
-import datatypes as dt
-from queue import Queue
 from pyubx2 import UBXReader
-from pyrtcm import RTCMReader
+from queue import Queue, Empty
+import datatypes as dt
 from pygnssutils import GNSSNTRIPClient
+from datetime import datetime, timezone, date
 from scipy.spatial.transform import Rotation as R
-from datetime import datetime, timedelta, timezone, date
 
 GPS_EPOCH = datetime(1980, 1, 6)
 GPS_UTC_OFFSET = 18
 DEG_TO_RAD = np.pi / 180
+FIX_FLAGS = {
+    0: "No Fix",
+    1: "2D/3D GNSS fix",
+    2: "Differential GNSS fix",
+    4: "RTK Fixed",
+    5: "RTK Float",
+    6: "GNSS Dead Reckoning",
+}
+GNSS_FIX_FLAGS = {
+    0: "No Fix",
+    1: "Dead Reckoning",
+    2: "2D GNSS fix",
+    3: "3D GNSS fix",
+    4: "GNSS + Dead Reckoning",
+    5: "Time only",
+}
 
-# NTRIP credentials
-server = 'rtk2go.com'
-port = 2101
-mountpoint = 'EMLIDHOME1'
-user = 'krupalhi@ualberta.ca'
-password = 'none'
 
+class Ublox():
 
-class Ublox:
     def __init__(self, gps_port="/dev/ttyACM0", baud_rate=115200, fusion=False, save_data=False, save_path=None):
+        super().__init__()
         self._serial = None
         self.running = False
         self.gps_port = gps_port
+        self.ntrip_run = False
         self.baud_rate = baud_rate
         self.template = {**dt.time_template, **dt.gps_template}
-
         if fusion:
             self.template = {**self.template, **dt.imu_template}
 
@@ -39,13 +48,19 @@ class Ublox:
         self._last_data = self.template.copy()
         self._status = dt.status_template.copy()
         self._calib_status = dt.calib_status_template.copy()
+
         self._save_data = save_data
         self._save_path = os.path.join(
             save_path, f"ublox_data_{gps_port[-1:]}.csv") if save_path else None
+
         self._rawbuffer = Queue()
         self._filebuffer = Queue()  # Use a queue for thread-safe data transfer
-        self._ntrip_data_queue = Queue()
+        self._ntrip_data = Queue()
+        self._raw_data_thread = None
+        self._parse_thread = None
         self._save_thread = None
+        self._ntrip_client = None
+        self._ntrip_settings = {"start": False}
 
         if self._save_data and self._save_path:
             try:
@@ -59,60 +74,94 @@ class Ublox:
 
     def start(self):
         self._serial = serial.Serial(self.gps_port, self.baud_rate, timeout=1)
-        self.ubr = UBXReader(self._serial, protfilter=7)
-        client = GNSSNTRIPClient()
-        client.run(
-            server=server,
-            port=port,
-            mountpoint=mountpoint,
-            datatype='RTCM',
-            ntripuser=user,
-            ntrippassword=password,
-            ggainterval=60,
-            output=self._ntrip_data_queue,
-        )
+        self._ubr = UBXReader(self._serial, protfilter=7)
+
         self.running = True
-        self.schedule_update()
-        self.parse_thread()
-        self.ntrip_thread = threading.Thread(target=self.read_ntrip)
+
+        self._raw_data_thread = threading.Thread(target=self.read_raw)
+        self._raw_data_thread.start()
+
+        self._parse_thread = threading.Thread(target=self.parse_sensor_data)
+        self._parse_thread.start()
+
         if self._save_data:
-            self.start_saving_thread()
+            self._save_thread = threading.Thread(target=self.save_data_thread)
+            self._save_thread.start()
 
     def stop(self):  # Ensure any remaining data is saved
         self.running = False
-        if self._update_thread:
-            self._update_thread.join()
-        if self._parse_thread:
+
+        if self._ntrip_client:
+            self._ntrip_client.stop()
+
+        if isinstance(self._raw_data_thread, threading.Thread) and self._raw_data_thread.is_alive():
+            self._raw_data_thread.join()
+
+        if isinstance(self._parse_thread, threading.Thread) and self._parse_thread.is_alive():
             self._parse_thread.join()
+
+        if isinstance(self.ntrip_thread, threading.Thread) and self.ntrip_thread.is_alive():
+            self.ntrip_thread.join()
+
+        if isinstance(self._save_thread, threading.Thread) and self._save_thread.is_alive():
+            self._save_thread.join()
+
         if self._serial and self._serial.is_open:
             self._serial.close()
-        if self._save_thread:
-            self._save_thread.join()  # Wait for the saving thread to finish
 
-    def start_saving_thread(self):
-        self._save_thread = threading.Thread(target=self.save_data_thread)
-        self._save_thread.start()
+        if self._save_data:
+            self.save_data()
 
-    def save_data_thread(self):
+    def ntrip_connect(self):
+        if self._ntrip_client is None:
+            self._ntrip_settings['start'] = True
+            self._start_ntrip_thread()
+        else:
+            self._stop_ntrip()
+
+    def set_ntrip_settings(self, settings):
+        self._ntrip_settings = settings
+
+    def _start_ntrip_thread(self):
+        self._ntrip_client = GNSSNTRIPClient(app=self)
+        self._ntrip_client.run(
+            server=self._ntrip_settings.server,
+            port=self._ntrip_settings.port,
+            mountpoint=self._ntrip_settings.mountpoint,
+            datatype='RTCM',
+            ntripuser=self._ntrip_settings.user,
+            ntrippassword=self._ntrip_settings.password,
+            ggainterval=1,
+            ggamode=0,
+            # Possible problem with this. (Also fix in NTRIP Parsing)
+            output=self._ntrip_data,
+        )
+
+        self.ntrip_thread = threading.Thread(target=self.read_ntrip)
+        self.ntrip_thread.start()
+
+    def _stop_ntrip(self):
+        self._ntrip['start'] = False
+
+        if isinstance(self.ntrip_thread, GNSSNTRIPClient) and self._ntrip_client._connected:
+            self._ntrip_client.stop()
+            self._ntrip_client = None
+
+        if isinstance(self.ntrip_thread, threading.Thread) and self.ntrip_thread.is_alive():
+            self.ntrip_thread.join()
+            self.ntrip_thread = None
+
+    def get_coordinates(self):
+        return self._last_data
+
+    def read_raw(self):
         while self.running:
             try:
-                # Wait for data to be available and get it
-                data = self._filebuffer.get(timeout=1)
-                with open(self._save_path, "a") as f:
-                    f.write(",".join(map(str, data.values())) + "\n")
+                if self._serial.in_waiting:
+                    _, parsed_data = self._ubr.read()
+                    self._rawbuffer.put(parsed_data)
             except Exception as e:
-                print(f"Error writing to file: {e}")
-            except Queue.Empty:
-                # No data available, continue waiting
-                pass
-
-    def schedule_update(self):
-        self._update_thread = threading.Thread(target=self.read_raw)
-        self._update_thread.start()
-
-    def parse_thread(self):
-        self._parse_thread = threading.Thread(target=self.parse_sensor_data)
-        self._parse_thread.start()
+                print(f"GPS Read Error: {e}")
 
     def parse_sensor_data(self):
         while self.running:
@@ -121,29 +170,14 @@ class Ublox:
                 if hasattr(parsed_data, "identity"):
                     msg_type = parsed_data.identity
 
-                    # if msg_type == "NAV-PVT":
-                    #     s = parsed_data.iTOW / 1000
-                    #     time = GPS_EPOCH + timedelta(seconds=s - GPS_UTC_OFFSET)
-                    #     iso_time = (
-                    #         f"{parsed_data.year}-{parsed_data.month:02}-{parsed_data.day:02}T"
-                    #         f"{time.strftime('%H:%M:%S.%f')}Z"
-                    #     )
-                    #     epoch_time = datetime.strptime(iso_time, "%Y-%m-%dT%H:%M:%S.%fZ").replace(
-                    #         tzinfo=timezone.utc
-                    #     )
-                    #     epoch_time = epoch_time.timestamp()
-
-                    #     self._current_data.update({
-                    #         "time": iso_time,
-                    #         "epochtime": f"{epoch_time:.3f}",
-                    #         "lat": parsed_data.lat,
-                    #         "lon": parsed_data.lon,
-                    #         "alt": parsed_data.hMSL / 1000,
-                    #     })
-                    #     self._status.update({
-                    #         "gpsFix": parsed_data.fixType,
-                    #         "gpsAcc (H, V)": (parsed_data.hAcc / 1000, parsed_data.vAcc / 1000),
-                    #     })
+                    if msg_type == "NAV-PVT":
+                        self._status.update({
+                            "gpsFix": GNSS_FIX_FLAGS[parsed_data.fixType],
+                            "HDOP": parsed_data.hAcc / 1000,    # m
+                            "VDOP": parsed_data.vAcc / 1000,    # m
+                            "PDOP": parsed_data.pDOP / 1000,    # no unit
+                            "numSV": parsed_data.numSV,
+                        })
 
                     if msg_type == "NAV-ATT":
                         roll = parsed_data.roll * DEG_TO_RAD
@@ -160,7 +194,6 @@ class Ublox:
                             "qY": quaternion[1],
                             "qZ": quaternion[2],
                             "qW": quaternion[3],
-                            "azimuth": yaw,
                         })
                         self._status.update({
                             "rollAcc": parsed_data.accRoll,
@@ -195,8 +228,8 @@ class Ublox:
                             "imuStatus": "Initialized" if parsed_data.imuInitStatus == 2 else ("Initializing" if parsed_data.imuInitStatus == 1 else "No"),
                             "fusionMode": parsed_data.fusionMode,
                         })
-                        sensor_types = {5: "gyroX", 13: "accX",
-                                        14: "accY", 16: "accZ", 17: "gyroY", 18: "gyroZ"}
+                        sensor_types = {5: "gyroX_calib", 13: "accX_calib",
+                                        14: "accY_calib", 16: "accZ_calib", 17: "gyroY_calib", 18: "gyroZ_calib"}
                         for i in range(1, parsed_data.numSens + 1):
                             try:
                                 sensor_type = getattr(
@@ -211,7 +244,7 @@ class Ublox:
                                 print(
                                     f"Warning: Missing sensor data for index {i}")
 
-                    elif msg_type in ["GNGGA", "GPGGA", "GNGNS", "GPGNS"]:
+                    elif msg_type in ["GNGGA", "GPGGA"]:
                         time_str = str(parsed_data.time)
                         if time_str.find(".") == -1:
                             time_str += ".000000"
@@ -237,48 +270,75 @@ class Ublox:
                             "lat": parsed_data.lat,
                             "lon": parsed_data.lon,
                             "alt": parsed_data.alt,
-                            "diffStation": parsed_data.diffStation,
+                            "sep": parsed_data.sep,
+                            "fix": parsed_data.quality,
+                            "sip": parsed_data.numSV,
+                            "hdop": parsed_data.HDOP,
+                            "diffage": parsed_data.diffAge,
+                            "diffstation": parsed_data.diffStation
                         })
-
-                        self._status["nvSat"] = parsed_data.numSV
 
                     elif msg_type == "GNVTG":
                         self._current_data["azimuth"] = parsed_data.cogt
+
                     elif msg_type == "RXM-RTCM":
                         self._status['rtcm_crc'] = parsed_data.crcFailed
                         self._status['rtcm_msg'] = parsed_data.msgUsed
 
+                    elif msg_type in ["NAV-HPPOSECEF"]:
+                        self._current_data.update({
+                            "3D Acc": parsed_data.pAcc / 1000,  # m
+                        })
+
+                    elif msg_type in ["NAV-HPPOSLLH"]:
+                        self._current_data.update({
+                            "2D hAcc": parsed_data.hAcc / 1000,  # m
+                            "2D vAcc": parsed_data.vAcc / 1000,  # m
+                        })
+
                 if all(self._current_data.get(k) is not None for k in self._current_data.keys()):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
+                    if (self._ntrip_client is None and
+                                self._ntrip['start'] and
+                                not self._last_data['lat'] == '' and
+                                not self._last_data['lon'] == '' and
+                                self._last_data['fix'] > 0
+                            ):
+                        print('STARTING NTRIP client')
+                        self._start_ntrip_thread()
+
+                    self._last_data = {k: str(v) if isinstance(
+                        v, (int, float)) else v for k, v in self._last_data.items()}
+                    temp = {**self._last_data, **
+                            self._status, **self._calib_status}
+                    temp['fix'] = FIX_FLAGS.get(
+                        temp['fix'], "Unknown")
+
                     if self._save_data:
-                        # Correct method for Queue
                         self._filebuffer.put(self._last_data)
+
             except Exception as e:
                 print(f"Parsing Error: {e}")
 
-    def read_raw(self):
+    def save_data_thread(self):
         while self.running:
             try:
-                if self._serial.in_waiting:
-                    _, parsed_data = self.ubr.read()
-                    self._rawbuffer.put(parsed_data)
+                # Wait for data to be available and get it
+                data = self._filebuffer.get(timeout=1)
+                with open(self._save_path, "a") as f:
+                    f.write(",".join(data.values()) + "\n")
             except Exception as e:
-                print(f"GPS Read Error: {e}")
+                print(f"Error writing to file: {e}")
+            except Empty:
+                continue
 
     def read_ntrip(self):
         while self.running:
             try:
-                if not self._ntrip_data_queue.empty():
-                    raw_data = self._ntrip_data_queue.get()
-                    self._serial.write(raw_data)
-                    print(f"Sent {len(raw_data)} bytes to serial port")
-                    # if isinstance(data, bytes):
-                    #     rtcm = RTCMReader(io.BytesIO(data))
-                    #     for msg in rtcm:
-                    #         if msg.identity == 1005:
-                    #             # Process RTCM message
-                    #             pass
+                if not self._ntrip_data.empty():
+                    raw_data = self._ntrip_data.get()
+                    self._serial.write(raw_data[0])
             except Exception as e:
                 print(f"NTRIP Read Error: {e}")
 
@@ -310,12 +370,14 @@ class Ublox:
 
 
 if __name__ == "__main__":
-    gps = Ublox(gps_port="/dev/ttyACM0", fusion=False,
+    gps = Ublox(gps_port="COM4", fusion=False,
                 save_data=True, save_path="test")
     gps.start()
     while True:
         try:
             print(gps.get_last_data())
+            time.sleep(1)
+            # pass
         except KeyboardInterrupt:
             break
 

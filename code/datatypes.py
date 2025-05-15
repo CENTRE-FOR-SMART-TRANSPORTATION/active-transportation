@@ -10,7 +10,15 @@ gps_template = {
     "lon": None,
     "alt": None,
     "azimuth": None,
-    "diffStation": None
+    "sep": None,    # Geoid separation: difference between ellipsoid and mean sea level
+    "fix": None,
+    "sip": None,    # number of satellites in view
+    "hdop": None,
+    "diffage": None,
+    "diffstation": None,
+    "2D hAcc": None,
+    "2D vAcc": None,
+    "3D Acc": None,
 }
 
 imu_template = {
@@ -34,8 +42,10 @@ status_template = {
     "fusionMode": 0,
     "imuStatus": 0,
     "gpsFix": 0,
-    "nvSat": 0,
-    "gpsAcc (H, V)": (0, 0),
+    "numSV": 0,
+    "HDOP": 0,
+    "VDOP": 0,
+    "PDOP": 0,
     "rollAcc": 0,
     "pitchAcc": 0,
     "yawAcc": 0,

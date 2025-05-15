@@ -1,16 +1,18 @@
 import os
 import sys
 import mscl
-import threading
 import datetime
+import threading
 from queue import Queue
-import ast
 import datatypes as dt
 
 
-class Microstrain:
+class Microstrain():
+
     def __init__(self, imu_port, baud_rate=115200, save_data=False, save_path=None):
-        # Initialize the Microstrain connection
+        super().__init__()
+
+        self.running = False
         self.connection = None
         self.node = None
         self.imu_port = imu_port
@@ -24,7 +26,10 @@ class Microstrain:
             save_path, f"microstrain_data_{imu_port[-1:]}.csv") if save_path else None
         self._raw_data_buffer = Queue()
         self._filebuffer = Queue()
-        self.running = False
+
+        self._save_thread = None
+        self._parse_thread = None
+        self.raw_data_thread = None
 
         if self._save_data and self._save_path:
             try:
@@ -169,14 +174,16 @@ class Microstrain:
                             q_vals = [float(x.strip())
                                       for x in quat[1:-1].split(",")]
                             if len(q_vals) == 4:
-                                self._current_data["qW"], self._current_data[
-                                    "qX"], self._current_data["qY"], self._current_data["qZ"] = q_vals
+                                self._current_data["qX"], self._current_data[
+                                    "qY"], self._current_data["qZ"], self._current_data["qW"] = q_vals
                         except ValueError:
                             print("Invalid quaternion format")
 
                     # Add the current data to the file buffer
                     if all(self._current_data.get(k) is not None for k in self._current_data.keys()):
-                        # self.lastData.emit(self.temp)
+                        self._current_data = {k: str(v) if isinstance(
+                            v, (int, float)) else v for k, v in self._current_data.items()}
+
                         if self._save_data:
                             self._filebuffer.put(self._current_data.copy())
 
@@ -192,7 +199,7 @@ class Microstrain:
                     # Wait for data to be available and get it
                     data = self._filebuffer.get(timeout=1)
                     with open(self._save_path, "a") as f:
-                        f.write(",".join(map(str, data.values())) + "\n")
+                        f.write(",".join(data.values()) + "\n")
             except Exception as e:
                 print(f"Error writing to file: {e}")
 
@@ -200,14 +207,14 @@ class Microstrain:
         try:
             with open(self._save_path, "a") as f:
                 for data in self._filebuffer:
-                    f.write(",".join(map(str, data.values())) + "\n")
+                    f.write(",".join(data.values()) + "\n")
             self._filebuffer.clear()
         except Exception as e:
             print(f"Error writing to file: {e}")
 
 
 if __name__ == "__main__":
-    imu = Microstrain(imu_port="/dev/ttyACM0", baud_rate=115200,
+    imu = Microstrain(imu_port="/dev/ttyACM1", baud_rate=115200,
                       save_data=True, save_path="test")
     imu.start()
     try:

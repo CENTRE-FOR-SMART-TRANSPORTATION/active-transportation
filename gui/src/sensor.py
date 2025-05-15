@@ -13,6 +13,8 @@ from src.serial.witmotion import WitMotion
 from src.serial.ublox import Ublox
 from src.ui.ui_sensor import Ui_Sensor
 
+RAD_TO_DEG = 180.0 / 3.14159265358979323846
+
 
 class Sensor(QWidget):
     def __init__(self, mainWindow, parent=None):
