@@ -1,8 +1,10 @@
 from PySide6.QtWidgets import QWidget, QMessageBox
-from PySide6.QtCore import QProcess, QThread, QUrl, Slot
+from PySide6.QtCore import QProcess, QUrl, Slot, QTimer
 from PySide6.QtSerialPort import QSerialPortInfo
 from PySide6.QtNetwork import QNetworkInterface
 from PySide6.QtGui import QDesktopServices
+from multiprocessing import Process, Queue
+import numpy as np
 import subprocess
 import datetime
 import shutil
@@ -12,8 +14,10 @@ from src.serial.microstrain import Microstrain
 from src.serial.witmotion import WitMotion
 from src.serial.ublox import Ublox
 from src.ui.ui_sensor import Ui_Sensor
+from src.utils.helpers import Bridge
 
-RAD_TO_DEG = 180.0 / 3.14159265358979323846
+
+RAD_TO_DEG = 180.0 / np.pi
 
 
 class Sensor(QWidget):
@@ -45,6 +49,13 @@ class Sensor(QWidget):
             # flags = interface.flags()
             # if flags & QNetworkInterface.IsUp and flags & QNetworkInterface.IsRunning and not flags & QNetworkInterface.IsLoopBack:
             self.ui.ethernetPort.addItem(interface.humanReadableName())
+
+        self.gps_error_queue = Queue()
+        self.imu_error_queue = Queue()
+
+        self.error_timer = QTimer()
+        self.error_timer.timeout.connect(self.check_error_queues)
+        self.error_timer.start(1000)  # check every 1 second
 
     @Slot()
     def on_next_clicked(self):
@@ -180,71 +191,89 @@ class Sensor(QWidget):
 
         save = self.ui.saveButton.isChecked()
         gps = imu = False
+        ntrip_details = self.mainWindow.ntrip_details
+        ntrip_details["start"] = self.ui.ntripConnection.isChecked()
 
-        currentTime = datetime.datetime.now()
-        currentTime = currentTime.strftime("%Y-%m-%d_%H-%M-%S")
-
+        currentTime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         recording_path = os.path.join(
             self.mainWindow.recording_path, currentTime)
-
-        if not os.path.exists(recording_path):
-            os.mkdir(recording_path)
+        os.makedirs(recording_path, exist_ok=True)
 
         if gpsport != "None" and gpstype != "None" and gpsbaud != 0:
             gps = True
-            self.gpsthread = QThread(self)
             gpsport = f"/dev/{gpsport}"
+            self.gps_queue = Queue()
+            self.gps_bridge = Bridge(self.gps_queue)
+            self.gps_bridge.lastData.connect(self.displayGPSData)
+
             if gpstype == "Fusion":
-                self.gps = Ublox(gpsport, gpsbaud, fusion=True, save_data=save,
-                                 save_path=recording_path)
-                self.gps.moveToThread(self.gpsthread)
-                self.gps.set_ntrip_settings(self.mainWindow.ntrip_details)
-
-                self.gpsthread.started.connect(self.gps.start)
-                self.gpsthread.finished.connect(self.gps.stop)
-                self.gps.lastData.connect(self.displayGPSData)
-                self.ui.ntrip_connection.connect(self.gps.ntrip_connect)
-
-                self.gpsthread.start()
+                self.gps_process = Process(
+                    target=Ublox,
+                    kwargs={
+                        "gps_port": gpsport,
+                        "baud_rate": gpsbaud,
+                        "fusion": True,
+                        "save_data": save,
+                        "save_path": recording_path,
+                        "ntrip_details": self.mainWindow.ntrip_details,
+                        "gps_queue": self.gps_queue,
+                        "gps_error_queue": self.gps_error_queue,
+                    }
+                )
+                self.gps_process.start()
             elif gpstype == "2BPro":
-                self.gps = Ublox(gpsport, gpsbaud, fusion=False, save_data=save,
-                                 save_path=recording_path)
-                self.gps.moveToThread(self.gpsthread)
+                self.gps_process = Process(
+                    target=Ublox,
+                    kwargs={
+                        "gps_port": gpsport,
+                        "baud_rate": gpsbaud,
+                        "fusion": False,
+                        "save_data": save,
+                        "save_path": recording_path,
+                        "ntrip_details": self.mainWindow.ntrip_details,
+                        "gps_queue": self.gps_queue,
+                        "gps_error_queue": self.gps_error_queue,
+                    }
+                )
+                self.gps_process.start()
 
-                self.gpsthread.started.connect(self.gps.start)
-                self.gpsthread.finished.connect(self.gps.stop)
-                self.gps.lastData.connect(self.displayGPSData)
-
-                self.gpsthread.start()
             else:
                 print("Gps Type not found")
                 gps = False
 
         if imuport != "None" and imutype != "None" and imubaud != 0:
             imu = True
-            self.imuthread = QThread(self)
             imuport = f"/dev/{imuport}"
+            self.imu_queue = Queue()
+            self.imu_bridge = Bridge(self.imu_queue)
+            self.imu_bridge.lastData.connect(self.displayIMUData)
+
             if imutype == "WitMotion":
-                self.wit = WitMotion(imuport, imubaud, save,
-                                     recording_path)
-
-                self.wit.moveToThread(self.imuthread)
-
-                self.imuthread.started.connect(self.wit.start)
-                self.imuthread.finished.connect(self.wit.stop)
-                self.wit.lastData.connect(self.displayIMUData)
-
-                self.imuthread.start()
+                self.imu_process = Process(
+                    target=WitMotion,
+                    kwargs={
+                        "imu_port": imuport,
+                        "baud_rate": imubaud,
+                        "save_data": save,
+                        "save_path": recording_path,
+                        "imu_queue": self.imu_queue,
+                        "imu_error_queue": self.imu_error_queue,
+                    }
+                )
+                self.imu_process.start()
             elif imutype == "Microstrain CV7":
-                self.microstrain = Microstrain(
-                    imuport, imubaud, save, recording_path)
-                self.microstrain.moveToThread(self.imuthread)
-
-                self.imuthread.started.connect(self.microstrain.start)
-                self.imuthread.finished.connect(self.microstrain.stop)
-                self.microstrain.lastData.connect(self.displayIMUData)
-
-                self.imuthread.start()
+                self.imu_process = Process(
+                    target=Microstrain,
+                    kwargs={
+                        "imu_port": imuport,
+                        "baud_rate": imubaud,
+                        "save_data": save,
+                        "save_path": recording_path,
+                        "imu_queue": self.imu_queue,
+                        "imu_error_queue": self.imu_error_queue,
+                    }
+                )
+                self.imu_process.start()
             else:
                 print("IMU Type not found")
                 imu = False
@@ -255,26 +284,42 @@ class Sensor(QWidget):
 
     @Slot()
     def on_serialTerminationButton_clicked(self):
-        try:
-            if hasattr(self, 'imuthread'):
-                self.wit.stop()
-                self.imuthread.quit()
-                self.imuthread.wait()
-                del self.wit
-                del self.imuthread
-            if hasattr(self, 'gpsthread'):
-                self.gps.stop()
-                self.gpsthread.quit()
-                self.gpsthread.wait()
-                if self.ui.ntrip_connection.isSignalConnected():
-                    self.ui.ntrip_connection.disconnect()
+        # Terminate GPS process
+        if hasattr(self, "gps_process") and self.gps_process.is_alive():
+            print("Stopping GPS process...")
+            self.gps_process.terminate()
+            self.gps_process.join()
+            print("GPS process stopped.")
 
-                del self.gps
-                del self.gpsthread
+        # Terminate IMU process
+        if hasattr(self, "imu_process") and self.imu_process.is_alive():
+            print("Stopping IMU process...")
+            self.imu_process.terminate()
+            self.imu_process.join()
+            print("IMU process stopped.")
 
-            self.ui.serialConnectionButton.setEnabled(True)
-            self.ui.serialTerminationButton.setEnabled(False)
+        # Clean up queues and bridges
+        if hasattr(self, "gps_queue"):
+            self.gps_queue.close()
+            self.gps_queue.join_thread()
+        if hasattr(self, "imu_queue"):
+            self.imu_queue.close()
+            self.imu_queue.join_thread()
 
-        except Exception as e:
-            print(f"Error stopping threads: {e}")
-            QMessageBox.critical(self, "Error", f"Error stopping threads: {e}")
+        if hasattr(self, "gps_bridge"):
+            self.gps_bridge.deleteLater()
+        if hasattr(self, "imu_bridge"):
+            self.imu_bridge.deleteLater()
+
+        # UI buttons
+        self.ui.serialConnectionButton.setEnabled(True)
+        self.ui.serialTerminationButton.setEnabled(False)
+
+    def check_error_queues(self):
+        while not self.gps_error_queue.empty():
+            err = self.gps_error_queue.get()
+            print(err)  # or show in UI
+
+        while not self.imu_error_queue.empty():
+            err = self.imu_error_queue.get()
+            print(err)  # or show in UI

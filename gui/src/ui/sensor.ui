@@ -92,11 +92,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -133,11 +136,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -161,11 +167,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -215,11 +224,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -243,11 +255,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -271,11 +286,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -299,11 +317,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -379,11 +400,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -421,10 +445,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -462,10 +486,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -503,10 +527,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -544,10 +568,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -585,317 +609,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QGroupBox" name="gps">
-               <property name="title">
-                <string>GPS Data</string>
-               </property>
-               <widget class="QPlainTextEdit" name="longitude">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>60</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelLatitude">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>30</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Latitude</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelLongitude">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>60</y>
-                  <width>81</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Longitude</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="latitude">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>30</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="altitude">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>90</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelAltitude">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>90</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Altitude</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelHeading">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>120</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Heading</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="heading">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>120</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelFix">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>150</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Fix</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="fix">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>150</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QGroupBox" name="timeGPS">
-               <property name="title">
-                <string>GPS Time</string>
-               </property>
-               <widget class="QLabel" name="labelSystemGPS">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>30</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Time</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelGPSTime">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>60</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>GPS</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="systemTimeGPS">
-                <property name="geometry">
-                 <rect>
-                  <x>70</x>
-                  <y>30</y>
-                  <width>181</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="GPSTime">
-                <property name="geometry">
-                 <rect>
-                  <x>70</x>
-                  <y>60</y>
-                  <width>181</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -926,11 +643,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -968,10 +688,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1022,10 +742,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1050,10 +770,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1080,28 +800,57 @@
                </widget>
               </widget>
              </item>
-             <item row="1" column="3">
-              <widget class="QGroupBox" name="acceleration">
+             <item row="0" column="0">
+              <widget class="QGroupBox" name="timeGPS">
                <property name="title">
-                <string>Acceleration</string>
+                <string>GPS Time</string>
                </property>
-               <widget class="QPlainTextEdit" name="AccX">
+               <widget class="QLabel" name="labelSystemGPS">
                 <property name="geometry">
                  <rect>
-                  <x>90</x>
+                  <x>10</x>
                   <y>30</y>
-                  <width>161</width>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Time</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelGPSTime">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>60</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>GPS</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="systemTimeGPS">
+                <property name="geometry">
+                 <rect>
+                  <x>70</x>
+                  <y>30</y>
+                  <width>181</width>
                   <height>21</height>
                  </rect>
                 </property>
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1113,90 +862,32 @@
                  <string>0</string>
                 </property>
                </widget>
-               <widget class="QLabel" name="labelAccX">
+               <widget class="QPlainTextEdit" name="GPSTime">
                 <property name="geometry">
                  <rect>
-                  <x>10</x>
-                  <y>30</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Acc X</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="AccY">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
+                  <x>70</x>
                   <y>60</y>
-                  <width>161</width>
+                  <width>181</width>
                   <height>21</height>
                  </rect>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
                 </property>
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelAccY">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>60</y>
-                  <width>81</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Acc Y</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelAccZ">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>90</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Acc Z</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="AccZ">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>90</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1227,11 +918,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1268,11 +962,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1322,236 +1019,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-              </widget>
-             </item>
-             <item row="0" column="3">
-              <widget class="QGroupBox" name="angle">
-               <property name="title">
-                <string>Angle</string>
-               </property>
-               <widget class="QPlainTextEdit" name="roll">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>30</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelRoll">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>30</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Roll</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="pitch">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>60</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelPitch">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>60</y>
-                  <width>81</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Pitch</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labelYaw">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>90</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Yaw</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="yaw">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>90</y>
-                  <width>161</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <widget class="QGroupBox" name="timeIMU">
-               <property name="title">
-                <string>IMU Time</string>
-               </property>
-               <widget class="QLabel" name="labelTimeIMU">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>30</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Time</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="labeIMU">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>60</y>
-                  <width>67</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>IMU</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="systemTimeIMU">
-                <property name="geometry">
-                 <rect>
-                  <x>70</x>
-                  <y>30</y>
-                  <width>181</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="lineWrapMode">
-                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="placeholderText">
-                 <string>0</string>
-                </property>
-               </widget>
-               <widget class="QPlainTextEdit" name="TimeIMU">
-                <property name="geometry">
-                 <rect>
-                  <x>70</x>
-                  <y>60</y>
-                  <width>181</width>
-                  <height>21</height>
-                 </rect>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string notr="true"/>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
-                </property>
-                <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1588,11 +1063,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1616,11 +1094,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1644,11 +1125,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1737,11 +1221,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1778,11 +1265,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1806,11 +1296,620 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QGroupBox" name="gps">
+               <property name="title">
+                <string>GPS Data</string>
+               </property>
+               <widget class="QPlainTextEdit" name="longitude">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>60</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelLatitude">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>30</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Latitude</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelLongitude">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>60</y>
+                  <width>81</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Longitude</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="latitude">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>30</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="altitude">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>90</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelAltitude">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>90</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Altitude</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelHeading">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>120</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Heading</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="heading">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>120</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelFix">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>150</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Fix</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="fix">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>150</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QGroupBox" name="acceleration">
+               <property name="title">
+                <string>Acceleration</string>
+               </property>
+               <widget class="QPlainTextEdit" name="AccX">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>30</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelAccX">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>30</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Acc X</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="AccY">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>60</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelAccY">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>60</y>
+                  <width>81</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Acc Y</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelAccZ">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>90</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Acc Z</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="AccZ">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>90</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QGroupBox" name="timeIMU">
+               <property name="title">
+                <string>IMU Time</string>
+               </property>
+               <widget class="QLabel" name="labelTimeIMU">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>30</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Time</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labeIMU">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>60</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>IMU</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="systemTimeIMU">
+                <property name="geometry">
+                 <rect>
+                  <x>70</x>
+                  <y>30</y>
+                  <width>181</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="TimeIMU">
+                <property name="geometry">
+                 <rect>
+                  <x>70</x>
+                  <y>60</y>
+                  <width>181</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QGroupBox" name="angle">
+               <property name="title">
+                <string>Angle</string>
+               </property>
+               <widget class="QPlainTextEdit" name="roll">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>30</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelRoll">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>30</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Roll</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="pitch">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>60</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="lineWrapMode">
+                 <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="placeholderText">
+                 <string>0</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelPitch">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>60</y>
+                  <width>81</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Pitch</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labelYaw">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>90</y>
+                  <width>67</width>
+                  <height>17</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Yaw</string>
+                </property>
+               </widget>
+               <widget class="QPlainTextEdit" name="yaw">
+                <property name="geometry">
+                 <rect>
+                  <x>90</x>
+                  <y>90</y>
+                  <width>161</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="toolTip">
+                 <string notr="true"/>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1841,11 +1940,14 @@
                 <property name="toolTip">
                  <string notr="true"/>
                 </property>
+                <property name="inputMethodHints">
+                 <set>Qt::InputMethodHint::ImhNone</set>
+                </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -1883,10 +1985,10 @@
                  <string notr="true"/>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="lineWrapMode">
                  <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
@@ -2134,7 +2236,7 @@
            <property name="geometry">
             <rect>
              <x>140</x>
-             <y>150</y>
+             <y>180</y>
              <width>80</width>
              <height>22</height>
             </rect>
@@ -2150,7 +2252,7 @@
            <property name="geometry">
             <rect>
              <x>230</x>
-             <y>150</y>
+             <y>180</y>
              <width>80</width>
              <height>22</height>
             </rect>
@@ -2199,6 +2301,12 @@
            </property>
            <property name="editable">
             <bool>false</bool>
+           </property>
+           <property name="currentIndex">
+            <number>11</number>
+           </property>
+           <property name="minimumContentsLength">
+            <number>0</number>
            </property>
            <item>
             <property name="text">
@@ -2271,22 +2379,6 @@
             </property>
            </item>
           </widget>
-          <widget class="QRadioButton" name="saveButton">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>150</y>
-             <width>141</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Save Data</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
           <widget class="QLabel" name="serialLabel">
            <property name="geometry">
             <rect>
@@ -2308,6 +2400,9 @@
              <width>101</width>
              <height>25</height>
             </rect>
+           </property>
+           <property name="currentIndex">
+            <number>11</number>
            </property>
            <item>
             <property name="text">
@@ -2440,7 +2535,7 @@
            <property name="geometry">
             <rect>
              <x>140</x>
-             <y>180</y>
+             <y>210</y>
              <width>171</width>
              <height>25</height>
             </rect>
@@ -2449,17 +2544,39 @@
             <string>Open Recording Folder</string>
            </property>
           </widget>
-          <widget class="QPushButton" name="ntrip_connection">
+          <widget class="QCheckBox" name="ntripConnection">
            <property name="geometry">
             <rect>
-             <x>140</x>
-             <y>212</y>
-             <width>171</width>
-             <height>25</height>
+             <x>160</x>
+             <y>150</y>
+             <width>151</width>
+             <height>23</height>
             </rect>
            </property>
            <property name="text">
             <string>NTRIP Connection</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="saveButton">
+           <property name="geometry">
+            <rect>
+             <x>40</x>
+             <y>150</y>
+             <width>92</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Save Data</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="tristate">
+            <bool>false</bool>
            </property>
           </widget>
          </widget>

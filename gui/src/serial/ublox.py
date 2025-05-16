@@ -7,9 +7,9 @@ from pyubx2 import UBXReader
 from queue import Queue, Empty
 import src.serial.datatypes as dt
 from pygnssutils import GNSSNTRIPClient
-from PySide6.QtCore import QObject, Signal, Slot
 from datetime import datetime, timezone, date
 from scipy.spatial.transform import Rotation as R
+from PySide6.QtCore import QObject, QTimer, QThread
 
 GPS_EPOCH = datetime(1980, 1, 6)
 GPS_UTC_OFFSET = 18
@@ -33,17 +33,22 @@ GNSS_FIX_FLAGS = {
 
 
 class Ublox(QObject):
-    lastData = Signal(dict)
-
-    def __init__(self, gps_port="/dev/ttyACM0", baud_rate=115200, fusion=False, save_data=False, save_path=None):
+    def __init__(self, **kwargs):
         super().__init__()
+
         self._serial = None
         self.running = False
-        self.gps_port = gps_port
-        self.ntrip_run = False
-        self.baud_rate = baud_rate
+        self.gps_port = kwargs.get("gps_port", "/dev/ttyACM0")
+        self.baud_rate = kwargs.get("baud_rate", 9600)
+        self.fusion = kwargs.get("fusion", False)
+        self.save_data = kwargs.get("save_data", False)
+        self.save_path = kwargs.get("save_path", None)
+        self.ntrip_details = kwargs.get("ntrip_details", {"start": False})
+        self.gps_queue = kwargs.get("gps_queue", None)
+        self.gps_error_queue = kwargs.get("gps_error_queue", None)
+
         self.template = {**dt.time_template, **dt.gps_template}
-        if fusion:
+        if self.fusion:
             self.template = {**self.template, **dt.imu_template}
 
         self._current_data = self.template.copy()
@@ -51,50 +56,93 @@ class Ublox(QObject):
         self._status = dt.status_template.copy()
         self._calib_status = dt.calib_status_template.copy()
 
-        self._save_data = save_data
-        self._save_path = os.path.join(
-            save_path, f"ublox_data_{gps_port[-1:]}.csv") if save_path else None
+        if self.save_data:
+            base_dir = self.save_path or "."
+            base_filename = f"ublox_data_fusion" if self.fusion else "ublox_data_pro"
+            count = 1
+
+            while True:
+                filename = f"{base_filename}_{count}.csv"
+                full_path = os.path.join(base_dir, filename)
+                if not os.path.exists(full_path):
+                    break
+                count += 1
+
+            self.save_path = full_path
 
         self._rawbuffer = Queue()
         self._filebuffer = Queue()  # Use a queue for thread-safe data transfer
-        self._ntrip_data = Queue()
+        self._ntripbuffer = Queue()
         self._raw_data_thread = None
         self._parse_thread = None
         self._save_thread = None
+        self._ntrip_thread = None
         self._ntrip_client = None
-        self._ntrip_settings = {"start": False}
+        self._poll_data = QTimer(self)
 
-        if self._save_data and self._save_path:
+        if self.save_data and self.save_path:
             try:
-                if not os.path.exists(save_path):
-                    os.mkdir(save_path)
-                with open(self._save_path, "w") as f:
+                os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
+                with open(self.save_path, "w") as f:
                     f.write(",".join(self._current_data.keys()) + "\n")
             except Exception as e:
                 print(f"Error opening file for writing: {e}")
-                self._save_data = False
+                self.save_data = False
+
+        self.start()
 
     def start(self):
-        self._serial = serial.Serial(self.gps_port, self.baud_rate, timeout=1)
-        self._ubr = UBXReader(self._serial, protfilter=7)
+        try:
+            self._serial = serial.Serial(
+                self.gps_port, self.baud_rate, timeout=1)
+            self._ubr = UBXReader(self._serial, protfilter=7)
 
-        self.running = True
+            self.running = True
 
-        self._raw_data_thread = threading.Thread(target=self.read_raw)
-        self._raw_data_thread.start()
+            self._raw_data_thread = threading.Thread(target=self._read_raw)
+            self._raw_data_thread.start()
 
-        self._parse_thread = threading.Thread(target=self.parse_sensor_data)
-        self._parse_thread.start()
+            self._parse_thread = threading.Thread(
+                target=self._parse_sensor_data)
+            self._parse_thread.start()
 
-        if self._save_data:
-            self._save_thread = threading.Thread(target=self.save_data_thread)
-            self._save_thread.start()
+            if self.save_data:
+                self._save_thread = threading.Thread(
+                    target=self._save_data_thread)
+                self._save_thread.start()
+
+            if self.gps_queue:
+                self._poll_data.setInterval(1000)
+                self._poll_data.timeout.connect(self._add_data_gps_queue)
+                self._poll_data.start()
+        except Exception as e:
+            print(f"UBlox port error: {e}")
+            if self.gps_error_queue:
+                self.gps_error_queue.put(f"Serial port error: {e}")
+
+    def _start_ntrip_thread(self):
+        self._ntrip_client = GNSSNTRIPClient(app=self)
+        self._ntrip_client.run(
+            server=self.ntrip_details.get('server'),
+            port=self.ntrip_details.get('port'),
+            mountpoint=self.ntrip_details.get('mountpoint'),
+            datatype=self.ntrip_details.get('datatype'),
+            ntripuser=self.ntrip_details.get('ntripuser'),
+            ntrippassword=self.ntrip_details.get('ntrippassword'),
+            version=self.ntrip_details.get('version'),
+            ggainterval=self.ntrip_details.get('ggainterval'),
+            ggamode=0,
+            output=self._ntripbuffer,
+        )
+
+        self.ntrip_thread = threading.Thread(target=self._read_ntrip)
+        self.ntrip_thread.start()
 
     def stop(self):  # Ensure any remaining data is saved
         self.running = False
 
-        if self._ntrip_client:
-            self._ntrip_client.stop()
+        if self.ntrip_details['start']:
+            self._stop_ntrip()
 
         if isinstance(self._raw_data_thread, threading.Thread) and self._raw_data_thread.is_alive():
             self._raw_data_thread.join()
@@ -102,62 +150,24 @@ class Ublox(QObject):
         if isinstance(self._parse_thread, threading.Thread) and self._parse_thread.is_alive():
             self._parse_thread.join()
 
-        if isinstance(self.ntrip_thread, threading.Thread) and self.ntrip_thread.is_alive():
-            self.ntrip_thread.join()
-
         if isinstance(self._save_thread, threading.Thread) and self._save_thread.is_alive():
             self._save_thread.join()
 
         if self._serial and self._serial.is_open:
             self._serial.close()
 
-        if self._save_data:
-            self.save_data()
-
-    @Slot()
-    def ntrip_connect(self):
-        if self._ntrip_client is None:
-            self._ntrip_settings['start'] = True
-            self._start_ntrip_thread()
-        else:
-            self._stop_ntrip()
-
-    def set_ntrip_settings(self, settings):
-        self._ntrip_settings = settings
-
-    def _start_ntrip_thread(self):
-        self._ntrip_client = GNSSNTRIPClient(app=self)
-        self._ntrip_client.run(
-            server=self._ntrip_settings.server,
-            port=self._ntrip_settings.port,
-            mountpoint=self._ntrip_settings.mountpoint,
-            datatype='RTCM',
-            ntripuser=self._ntrip_settings.user,
-            ntrippassword=self._ntrip_settings.password,
-            ggainterval=1,
-            ggamode=0,
-            # Possible problem with this. (Also fix in NTRIP Parsing)
-            output=self._ntrip_data,
-        )
-
-        self.ntrip_thread = threading.Thread(target=self.read_ntrip)
-        self.ntrip_thread.start()
-
     def _stop_ntrip(self):
-        self._ntrip['start'] = False
+        self.ntrip_details['start'] = False
 
-        if isinstance(self.ntrip_thread, GNSSNTRIPClient) and self._ntrip_client._connected:
+        if isinstance(self._ntrip_client, GNSSNTRIPClient) and self._ntrip_client._connected:
             self._ntrip_client.stop()
             self._ntrip_client = None
 
-        if isinstance(self.ntrip_thread, threading.Thread) and self.ntrip_thread.is_alive():
-            self.ntrip_thread.join()
-            self.ntrip_thread = None
+        if isinstance(self._ntrip_thread, threading.Thread) and self._ntrip_thread.is_alive():
+            self._ntrip_thread.join()
+            self._ntrip_thread = None
 
-    def get_coordinates(self):
-        return self._last_data
-
-    def read_raw(self):
+    def _read_raw(self):
         while self.running:
             try:
                 if self._serial.in_waiting:
@@ -165,8 +175,21 @@ class Ublox(QObject):
                     self._rawbuffer.put(parsed_data)
             except Exception as e:
                 print(f"GPS Read Error: {e}")
+                if self.gps_error_queue:
+                    self.gps_error_queue.put(f"GPS Read Error: {e}")
 
-    def parse_sensor_data(self):
+    def _read_ntrip(self):
+        while self.running:
+            try:
+                if not self._ntripbuffer.empty():
+                    raw_data = self._ntripbuffer.get()
+                    self._serial.write(raw_data[0])
+            except Exception as e:
+                print(f"NTRIP Read Error: {e}")
+                if self.gps_error_queue:
+                    self.gps_error_queue.put(f"NTRIP Read Error: {e}")
+
+    def _parse_sensor_data(self):
         while self.running:
             try:
                 parsed_data = self._rawbuffer.get(timeout=1)
@@ -303,51 +326,62 @@ class Ublox(QObject):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
                     if (self._ntrip_client is None and
-                                self._ntrip['start'] and
-                                not self._last_data['lat'] == '' and
-                                not self._last_data['lon'] == '' and
-                                self._last_data['fix'] > 0
-                            ):
+                        self.ntrip_details['start'] and
+                        not self._last_data['lat'] == '' and
+                        not self._last_data['lon'] == '' and
+                        self._last_data['fix'] > 0
+                        ):
                         print('STARTING NTRIP client')
                         self._start_ntrip_thread()
 
                     self._last_data = {k: str(v) if isinstance(
                         v, (int, float)) else v for k, v in self._last_data.items()}
-                    temp = {**self._last_data, **
-                            self._status, **self._calib_status}
-                    temp['fix'] = FIX_FLAGS.get(
-                        temp['fix'], "Unknown")
-                    self.lastData.emit(temp)
 
-                    if self._save_data:
+                    if self.save_data:
                         self._filebuffer.put(self._last_data)
 
             except Exception as e:
                 print(f"Parsing Error: {e}")
+                if self.gps_error_queue:
+                    self.gps_error_queue.put(f"Parsing Error: {e}")
 
-    def save_data_thread(self):
-        while self.running:
-            try:
-                # Wait for data to be available and get it
-                data = self._filebuffer.get(timeout=1)
-                with open(self._save_path, "a") as f:
-                    f.write(",".join(data.values()) + "\n")
-            except Exception as e:
-                print(f"Error writing to file: {e}")
-            except Empty:
-                continue
+    def _save_data_thread(self):
+        with open(self.save_path, "a", buffering=1) as f:
+            data_batch = []  # List to collect data packets
+            while self.running:
+                try:
+                    data = self._filebuffer.get(timeout=1)
+                    # Collect data in the batch
+                    data_batch.append(",".join(data.values()))
 
-    def read_ntrip(self):
-        while self.running:
-            try:
-                if not self._ntrip_data.empty():
-                    raw_data = self._ntrip_data.get()
-                    self._serial.write(raw_data[0])
-            except Exception as e:
-                print(f"NTRIP Read Error: {e}")
+                    # Check if we have collected 100 data packets
+                    if len(data_batch) >= 5:
+                        # Write the batch to the file
+                        f.write("\n".join(data_batch) + "\n")
+                        data_batch.clear()  # Clear the batch after writing
+                except Empty:
+                    continue
+                except Exception as e:
+                    print(f"Error writing to file: {e}")
+                    if self.gps_error_queue:
+                        self.gps_error_queue.put(f"Error writing to file: {e}")
 
-    def get_last_data(self):
+            # Write any remaining data in the batch when the thread stops
+            if data_batch:
+                f.write("\n".join(data_batch) + "\n")
+
+    def get_coordinates(self):
         return self._last_data
+
+    def _add_data_gps_queue(self):
+        temp = {**self._last_data, **
+                self._status, **self._calib_status}
+        temp = {k: str(v) if isinstance(
+            v, (int, float)) else v for k, v in temp.items()}
+        temp['fix'] = FIX_FLAGS.get(
+            temp['fix'], "Unknown")
+
+        self.gps_queue.put(temp)
 
     def get_calib_status(self):
         return self._calib_status
@@ -359,31 +393,23 @@ class Ublox(QObject):
         self._status = dt.status_template.copy()
         self._calib_status = dt.calib_status_template.copy()
 
-    def save_data(self):
-        try:
-            # Make sure to save any remaining data from the buffer
-            while not self._filebuffer.empty():
-                data = self._filebuffer.get()
-                with open(self._save_path, "a") as f:
-                    f.write(",".join(map(str, data.values())) + "\n")
-        except Exception as e:
-            print(f"Error writing to file: {e}")
-
     def __del__(self):
         self.stop()
 
 
 if __name__ == "__main__":
-    gps = Ublox(gps_port="COM4", fusion=False,
+    gps_thread = QThread()
+    gps = Ublox(gps_port="/dev/ttyACM1", fusion=False,
                 save_data=True, save_path="test")
-    gps.start()
-    while True:
-        try:
-            print(gps.get_last_data())
+    gps.moveToThread(gps_thread)
+    gps_thread.started.connect(gps.start)
+    gps_thread.start()
+    try:
+        while True:
+            print(gps.get_coordinates())
             time.sleep(1)
-            # pass
-        except KeyboardInterrupt:
-            break
-
-    # time.sleep(30)
-    gps.stop()
+    except KeyboardInterrupt:
+        gps.stop()
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        gps.stop()
