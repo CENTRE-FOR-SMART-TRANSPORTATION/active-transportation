@@ -1,7 +1,7 @@
 import os
 import sys
-import src.utils.mscl.mscl as mscl
-# import mscl
+# import src.utils.mscl.mscl as mscl
+import mscl
 import datetime
 import threading
 import time
@@ -21,6 +21,8 @@ class Microstrain(QObject):
         self.save_path = kwargs.get("save_path", None)
         self.imu_queue = kwargs.get("imu_queue", None)
         self.imu_error_queue = kwargs.get("imu_error_queue", None)
+        self.display_timer = kwargs.get("display_timer", 1)
+
 
         self.running = False
         self.connection = None
@@ -46,7 +48,6 @@ class Microstrain(QObject):
 
         self._rawbuffer = Queue()
         self._filebuffer = Queue()
-        self._poll_data = QTimer(self)
 
         self._raw_data_thread = None
         self._parse_thread = None
@@ -92,9 +93,10 @@ class Microstrain(QObject):
                 self._save_thread.start()
 
             if self.imu_queue is not None:
-                self._poll_data.setInterval(1000)
-                self._poll_data.timeout.connect(self._add_data_imu_queue)
-                self._poll_data.start()
+                while True:
+                    self.imu_queue.put(self._last_data)
+                    time.sleep(self.display_timer)
+
 
         except mscl.Error as e:
             print(f"Error connecting to Microstrain device: {e}")
@@ -116,6 +118,7 @@ class Microstrain(QObject):
         if isinstance(self.connection, mscl.Connection):
             try:
                 self.connection.disconnect()
+                
                 print("Connection closed.")
             except mscl.Error as e:
                 print(f"Error closing connection: {e}")
@@ -266,8 +269,6 @@ class Microstrain(QObject):
             if data_batch:
                 f.write("\n".join(data_batch) + "\n")
 
-    def _add_data_imu_queue(self):
-        self.imu_queue.put(self._last_data)
 
 
 if __name__ == "__main__":

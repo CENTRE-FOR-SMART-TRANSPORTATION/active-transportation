@@ -7,6 +7,7 @@ from multiprocessing import Process, Queue
 import numpy as np
 import subprocess
 import datetime
+import math
 import shutil
 import os
 
@@ -41,8 +42,8 @@ class Sensor(QWidget):
 
         # Populate available serial ports
         for serial_port in QSerialPortInfo.availablePorts():
-            self.ui.gpsSerial.addItem(serial_port.portName())
-            self.ui.imuSerial.addItem(serial_port.portName())
+            self.ui.gpsSerial.addItem(f"{serial_port.portName()} - {serial_port.manufacturer()}")
+            self.ui.imuSerial.addItem(f"{serial_port.portName()} - {serial_port.manufacturer()}")
 
         # Populate available ethernet interfaces
         for interface in QNetworkInterface.allInterfaces():
@@ -126,51 +127,78 @@ class Sensor(QWidget):
 
         # TODO: Once set, if it reverts automate the process. (Timer)
 
+    def format_float(value, precision=6):
+        try:
+            return f"{float(value):.{precision}f}"
+        except (ValueError, TypeError):
+            return ""
+
     @Slot(dict)
     def displayIMUData(self, data):
+
+        def format_float(value, precision=6, radians_to_degrees=False):
+            try:
+                val = float(value)
+                if radians_to_degrees:
+                    val = math.degrees(val)
+                return f"{val:.{precision}f}"
+            except (ValueError, TypeError):
+                return ""
+
+            
         self.ui.systemTimeIMU.setPlainText(data.get("systemtime", ""))
         self.ui.TimeIMU.setPlainText(data.get("imutime", ""))
-        self.ui.AccX.setPlainText(data.get("accX", ""))
-        self.ui.AccY.setPlainText(data.get("accY", ""))
-        self.ui.AccZ.setPlainText(data.get("accZ", ""))
-        self.ui.gyroX.setPlainText(data.get("gyroX", ""))
-        self.ui.gyroY.setPlainText(data.get("gyroY", ""))
-        self.ui.gyroZ.setPlainText(data.get("gyroZ", ""))
-        self.ui.roll.setPlainText(data.get("roll", ""))
-        self.ui.pitch.setPlainText(data.get("pitch", ""))
-        self.ui.yaw.setPlainText(data.get("yaw", ""))
-        self.ui.quatX.setPlainText(data.get("qX", ""))
-        self.ui.quatY.setPlainText(data.get("qY", ""))
-        self.ui.quatZ.setPlainText(data.get("qZ", ""))
-        self.ui.quatW.setPlainText(data.get("qW", ""))
+        self.ui.AccX.setPlainText(format_float(data.get("accX")))
+        self.ui.AccY.setPlainText(format_float(data.get("accY")))
+        self.ui.AccZ.setPlainText(format_float(data.get("accZ")))
+        self.ui.gyroX.setPlainText(format_float(data.get("gyroX")))
+        self.ui.gyroY.setPlainText(format_float(data.get("gyroY")))
+        self.ui.gyroZ.setPlainText(format_float(data.get("gyroZ")))
+        self.ui.roll.setPlainText(format_float(data.get("roll"), radians_to_degrees=True))
+        self.ui.pitch.setPlainText(format_float(data.get("pitch"), radians_to_degrees=True))
+        self.ui.yaw.setPlainText(format_float(data.get("yaw"), radians_to_degrees=True))
+        self.ui.quatX.setPlainText(format_float(data.get("qX")))
+        self.ui.quatY.setPlainText(format_float(data.get("qY")))
+        self.ui.quatZ.setPlainText(format_float(data.get("qZ")))
+        self.ui.quatW.setPlainText(format_float(data.get("qW")))
 
     @Slot(dict)
     def displayGPSData(self, data):
         # TODO: Add Fusion IMU
+
+        def format_float(value, precision=6, radians_to_degrees=False):
+            try:
+                val = float(value)
+                if radians_to_degrees:
+                    val = math.degrees(val)
+                return f"{val:.{precision}f}"
+            except (ValueError, TypeError):
+                return ""
+            
         self.ui.systemTimeGPS.setPlainText(data.get("systemtime", ""))
         self.ui.GPSTime.setPlainText(data.get("gpstime", ""))
-        self.ui.latitude.setPlainText(data.get("lat", ""))
-        self.ui.longitude.setPlainText(data.get("lon", ""))
-        self.ui.altitude.setPlainText(data.get("alt", ""))
-        self.ui.heading.setPlainText(data.get("azimuth", ""))
+        self.ui.latitude.setPlainText(format_float(data.get("lat")))
+        self.ui.longitude.setPlainText(format_float(data.get("lon")))
+        self.ui.altitude.setPlainText(format_float(data.get("alt")))
+        self.ui.heading.setPlainText(format_float(data.get("azimuth")))
         self.ui.fix.setPlainText(data.get("fix", ""))
 
         self.ui.diffAge.setPlainText(data.get("diffage", ""))
         self.ui.diffStation.setPlainText(data.get("diffstation", ""))
 
-        self.ui.hAccu.setPlainText(data.get("2D hAcc", ""))
-        self.ui.vAccu.setPlainText(data.get("2D vAcc", ""))
-        self.ui.acc3D.setPlainText(data.get("3D Acc", ""))
+        self.ui.hAccu.setPlainText(format_float(data.get("2D hAcc")))
+        self.ui.vAccu.setPlainText(format_float(data.get("2D vAcc")))
+        self.ui.acc3D.setPlainText(format_float(data.get("3D Acc")))
         self.ui.GPSFix.setPlainText(data.get("gpsFix", ""))
         self.ui.numSat.setPlainText(data.get("numSV", ""))
-        self.ui.HDOP.setPlainText(data.get("HDOP", ""))
-        self.ui.VDOP.setPlainText(data.get("VDOP", ""))
-        self.ui.PDOP.setPlainText(data.get("PDOP", ""))
+        self.ui.HDOP.setPlainText(format_float(data.get("HDOP")))
+        self.ui.VDOP.setPlainText(format_float(data.get("VDOP")))
+        self.ui.PDOP.setPlainText(format_float(data.get("PDOP")))
         self.ui.fusionMode.setPlainText(data.get("fusionMode", ""))
         self.ui.imuStatus.setPlainText(data.get("imuStatus", ""))
-        self.ui.rollAccu.setPlainText(data.get("rollAcc", ""))
-        self.ui.pitchAccu.setPlainText(data.get("pitchAcc", ""))
-        self.ui.yawAccu.setPlainText(data.get("yawAcc", ""))
+        self.ui.rollAccu.setPlainText(format_float(data.get("rollAcc")))
+        self.ui.pitchAccu.setPlainText(format_float(data.get("pitchAcc")))
+        self.ui.yawAccu.setPlainText(format_float(data.get("yawAcc")))
 
         self.ui.calibGyroX.setPlainText(data.get("gyroX_calib", ""))
         self.ui.calibGyroY.setPlainText(data.get("gyroY_calib", ""))
@@ -218,6 +246,7 @@ class Sensor(QWidget):
                         "ntrip_details": self.mainWindow.ntrip_details,
                         "gps_queue": self.gps_queue,
                         "gps_error_queue": self.gps_error_queue,
+                        "display_timer": 0.1,
                     }
                 )
                 self.gps_process.start()
@@ -233,6 +262,8 @@ class Sensor(QWidget):
                         "ntrip_details": self.mainWindow.ntrip_details,
                         "gps_queue": self.gps_queue,
                         "gps_error_queue": self.gps_error_queue,
+                        "display_timer": 0.1,
+
                     }
                 )
                 self.gps_process.start()
@@ -258,6 +289,8 @@ class Sensor(QWidget):
                         "save_path": recording_path,
                         "imu_queue": self.imu_queue,
                         "imu_error_queue": self.imu_error_queue,
+                        "display_timer": 0.1,
+
                     }
                 )
                 self.imu_process.start()
@@ -271,6 +304,8 @@ class Sensor(QWidget):
                         "save_path": recording_path,
                         "imu_queue": self.imu_queue,
                         "imu_error_queue": self.imu_error_queue,
+                        "display_timer": 0.1,
+
                     }
                 )
                 self.imu_process.start()

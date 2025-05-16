@@ -1,4 +1,5 @@
 import os
+import time
 import serial
 import struct
 import datetime
@@ -22,6 +23,8 @@ class WitMotion(QObject):
         self.save_path = kwargs.get("save_path", None)
         self.imu_queue = kwargs.get("imu_queue", None)
         self.imu_error_queue = kwargs.get("imu_error_queue", None)
+        self.display_timer = kwargs.get("display_timer", 1)
+
 
         self.serial = None
         self.running = False
@@ -45,7 +48,6 @@ class WitMotion(QObject):
 
         self._rawbuffer = Queue()
         self._filebuffer = Queue()
-        self._poll_data = QTimer(self)
 
         self._raw_data_thread = None
         self._parse_thread = None
@@ -81,9 +83,10 @@ class WitMotion(QObject):
                 self._save_thread.start()
 
             if self.imu_queue is not None:
-                self._poll_data.setInterval(1000)
-                self._poll_data.timeout.connect(self._add_data_imu_queue)
-                self._poll_data.start()
+                while True:
+                    self.imu_queue.put(self._last_data)
+                    time.sleep(self.display_timer)
+
         except Exception as e:
             print(f"Serial port error: {e}")
             if self.imu_error_queue is not None:
@@ -243,9 +246,6 @@ class WitMotion(QObject):
     def get_last_data(self):
         """Return the last complete data packet"""
         return self._last_data
-
-    def _add_data_imu_queue(self):
-        self.imu_queue.put(self._last_data)
 
     def __del__(self):
         """Cleanup resources on object destruction"""

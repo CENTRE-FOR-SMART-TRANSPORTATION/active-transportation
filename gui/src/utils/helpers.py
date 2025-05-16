@@ -9,7 +9,7 @@ class Bridge(QObject):
         self.queue = queue
         self.timer = QTimer()
         self.timer.timeout.connect(self.poll)
-        self.timer.start(1000)  # adjust poll rate (ms) as needed
+        self.timer.start(100)  # adjust poll rate (ms) as needed
 
     def poll(self):
         while not self.queue.empty():

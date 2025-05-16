@@ -15,12 +15,12 @@ GPS_EPOCH = datetime(1980, 1, 6)
 GPS_UTC_OFFSET = 18
 DEG_TO_RAD = np.pi / 180
 FIX_FLAGS = {
-    0: "No Fix",
-    1: "2D/3D GNSS fix",
-    2: "Differential GNSS fix",
-    4: "RTK Fixed",
-    5: "RTK Float",
-    6: "GNSS Dead Reckoning",
+    "0": "No Fix",
+    "1": "2D/3D GNSS fix",
+    "2": "Differential GNSS fix",
+    "4": "RTK Fixed",
+    "5": "RTK Float",
+    "6": "GNSS Dead Reckoning",
 }
 GNSS_FIX_FLAGS = {
     0: "No Fix",
@@ -46,6 +46,8 @@ class Ublox(QObject):
         self.ntrip_details = kwargs.get("ntrip_details", {"start": False})
         self.gps_queue = kwargs.get("gps_queue", None)
         self.gps_error_queue = kwargs.get("gps_error_queue", None)
+        self.display_timer = kwargs.get("display_timer", 1)
+
 
         self.template = {**dt.time_template, **dt.gps_template}
         if self.fusion:
@@ -78,7 +80,6 @@ class Ublox(QObject):
         self._save_thread = None
         self._ntrip_thread = None
         self._ntrip_client = None
-        self._poll_data = QTimer(self)
 
         if self.save_data and self.save_path:
             try:
@@ -111,10 +112,18 @@ class Ublox(QObject):
                     target=self._save_data_thread)
                 self._save_thread.start()
 
-            if self.gps_queue:
-                self._poll_data.setInterval(1000)
-                self._poll_data.timeout.connect(self._add_data_gps_queue)
-                self._poll_data.start()
+            if self.gps_queue is not None:
+                while True:
+                    temp = {**self._last_data, **
+                            self._status, **self._calib_status}
+                    temp = {k: str(v) if isinstance(
+                        v, (int, float)) else v for k, v in temp.items()}
+                    temp['fix'] = FIX_FLAGS.get(
+                        temp['fix'], "Unknown")
+
+                    self.gps_queue.put(temp)
+                    time.sleep(self.display_timer)
+
         except Exception as e:
             print(f"UBlox port error: {e}")
             if self.gps_error_queue:
@@ -178,12 +187,15 @@ class Ublox(QObject):
                 if self.gps_error_queue:
                     self.gps_error_queue.put(f"GPS Read Error: {e}")
 
+
     def _read_ntrip(self):
         while self.running:
             try:
-                if not self._ntripbuffer.empty():
-                    raw_data = self._ntripbuffer.get()
-                    self._serial.write(raw_data[0])
+                # Block for a short time waiting for data (non-busy loop)
+                raw_data = self._ntripbuffer.get(timeout=1)  # Blocking read, 1s timeout
+                self._serial.write(raw_data[0])
+            except Empty:
+                continue  # No data this second, just keep looping
             except Exception as e:
                 print(f"NTRIP Read Error: {e}")
                 if self.gps_error_queue:
@@ -372,16 +384,6 @@ class Ublox(QObject):
 
     def get_coordinates(self):
         return self._last_data
-
-    def _add_data_gps_queue(self):
-        temp = {**self._last_data, **
-                self._status, **self._calib_status}
-        temp = {k: str(v) if isinstance(
-            v, (int, float)) else v for k, v in temp.items()}
-        temp['fix'] = FIX_FLAGS.get(
-            temp['fix'], "Unknown")
-
-        self.gps_queue.put(temp)
 
     def get_calib_status(self):
         return self._calib_status
