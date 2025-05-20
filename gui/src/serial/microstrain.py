@@ -1,15 +1,12 @@
 import os
 import sys
-# import src.utils.mscl.mscl as mscl
 import mscl
+import time
 import datetime
 import threading
-import time
 from queue import Queue, Empty
 import src.serial.datatypes as dt
-# import datatypes as dt
-
-from PySide6.QtCore import QObject, QTimer, QThread
+from PySide6.QtCore import QObject, QThread
 
 
 class Microstrain(QObject):

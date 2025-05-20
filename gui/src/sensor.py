@@ -209,11 +209,11 @@ class Sensor(QWidget):
 
     @Slot()
     def on_serialConnectionButton_clicked(self):
-        gpsport = self.ui.gpsSerial.currentText()
+        gpsport = self.ui.gpsSerial.currentText().split('-')[0].strip()
         gpsbaud = int(self.ui.baudGPS.currentText())
         gpstype = self.ui.gpsType.currentText()
 
-        imuport = self.ui.imuSerial.currentText()
+        imuport = self.ui.imuSerial.currentText().split('-')[0].strip()
         imubaud = int(self.ui.baudIMU.currentText())
         imutype = self.ui.imuType.currentText()
 
