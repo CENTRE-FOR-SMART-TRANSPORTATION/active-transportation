@@ -29,11 +29,21 @@ GNSS_FIX_FLAGS = {
     4: "GNSS + Dead Reckoning",
     5: "Time only",
 }
+NTRIP_DETAILS = {
+    "start": False,         # Keep it False
+    "server": None,
+    "port": None,
+    "mountpoint": None,
+    "datatype": "RTCM",
+    "ntripuser": None,
+    "ntrippassword": None,
+    "version": 2,
+    "ggainterval": 1,
+}
 
 
 class Ublox():
     def __init__(self, **kwargs):
-
         self._serial = None
         self.running = False
         self.gps_port = kwargs.get("gps_port", "/dev/ttyACM0")
@@ -41,11 +51,10 @@ class Ublox():
         self.fusion = kwargs.get("fusion", False)
         self.save_data = kwargs.get("save_data", False)
         self.save_path = kwargs.get("save_path", None)
-        self.ntrip_details = kwargs.get("ntrip_details", {"start": False})
+        self.ntrip = kwargs.get("ntrip", False)
         self.gps_queue = kwargs.get("gps_queue", None)
         self.gps_error_queue = kwargs.get("gps_error_queue", None)
         self.display_timer = kwargs.get("display_timer", 1)
-
 
         self.template = {**dt.time_template, **dt.gps_template}
         if self.fusion:
@@ -69,6 +78,10 @@ class Ublox():
                 count += 1
 
             self.save_path = full_path
+
+        if self.ntrip:
+            self.ntrip_details = NTRIP_DETAILS.copy()
+            self.ntrip_details['start'] = True
 
         self._rawbuffer = Queue()
         self._filebuffer = Queue()  # Use a queue for thread-safe data transfer
@@ -185,12 +198,12 @@ class Ublox():
                 if self.gps_error_queue:
                     self.gps_error_queue.put(f"GPS Read Error: {e}")
 
-
     def _read_ntrip(self):
         while self.running:
             try:
                 # Block for a short time waiting for data (non-busy loop)
-                raw_data = self._ntripbuffer.get(timeout=1)  # Blocking read, 1s timeout
+                raw_data = self._ntripbuffer.get(
+                    timeout=1)  # Blocking read, 1s timeout
                 self._serial.write(raw_data[0])
             except Empty:
                 continue  # No data this second, just keep looping
@@ -336,10 +349,10 @@ class Ublox():
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
                     if (self._ntrip_client is None and
-                        self.ntrip_details['start'] and
-                        not self._last_data['lat'] == '' and
-                        not self._last_data['lon'] == '' and
-                        self._last_data['fix'] > 0
+                            self.ntrip_details['start'] and
+                            not self._last_data['lat'] == '' and
+                            not self._last_data['lon'] == '' and
+                            self._last_data['fix'] > 0
                         ):
                         print('STARTING NTRIP client')
                         self._start_ntrip_thread()
