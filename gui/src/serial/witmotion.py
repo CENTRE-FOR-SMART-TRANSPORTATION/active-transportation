@@ -25,7 +25,6 @@ class WitMotion(QObject):
         self.imu_error_queue = kwargs.get("imu_error_queue", None)
         self.display_timer = kwargs.get("display_timer", 1)
 
-
         self.serial = None
         self.running = False
         self.template = {**dt.time_template, **dt.imu_template}
@@ -201,8 +200,10 @@ class WitMotion(QObject):
                 for key, func in data_extractors.items():
                     result = func(s)
                     if result is not None:
-                        # if key == "angle":  # Special yaw correction
-                        # result[2] = (result[2] + 360) % 360
+                        if key == "angle":  # Special yaw correction
+                            result[0] = result[0] * DEG_TO_RAD
+                            result[1] = result[1] * DEG_TO_RAD
+                            result[2] = ((result[2] + 360) % 360) * DEG_TO_RAD
                         self._current_data.update(
                             dict(zip(data_keys[key], result)))
 

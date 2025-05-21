@@ -1,4 +1,5 @@
-from PySide6.QtCore import QObject, Signal, QTimer
+from PySide6.QtCore import QObject, Signal, QTimer, Qt
+from PySide6.QtWidgets import QTextBrowser
 
 
 class Bridge(QObject):
@@ -15,3 +16,30 @@ class Bridge(QObject):
         while not self.queue.empty():
             data = self.queue.get()
             self.lastData.emit(data)
+
+
+class PrintStream(QObject):
+    message_signal = Signal(str, str)
+
+    def __init__(self, text_browser: QTextBrowser):
+        super().__init__()
+        self.text_browser = text_browser
+        self.message_signal.connect(self.append_text)
+
+    def write(self, message):
+        if message.strip():
+            self.message_signal.emit(message, "black")
+
+    def flush(self):
+        pass
+
+    def print(self, message, color="black"):
+        self.message_signal.emit(str(message), color)
+
+    def append_text(self, message, color):
+        # Wrap text in HTML span with color
+        print("append_text", message, color)
+        html = f'<span style="color:{color};">{message}</span><br>'
+        self.text_browser.moveCursor(Qt.TextCursor.End)
+        self.text_browser.insertHtml(html)
+        self.text_browser.moveCursor(Qt.TextCursor.End)

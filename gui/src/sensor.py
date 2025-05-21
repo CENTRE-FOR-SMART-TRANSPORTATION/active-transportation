@@ -7,15 +7,16 @@ from multiprocessing import Process, Queue
 import numpy as np
 import subprocess
 import datetime
-import math
 import shutil
+import math
+import sys
 import os
 
 from src.serial.microstrain import Microstrain
 from src.serial.witmotion import WitMotion
 from src.serial.ublox import Ublox
 from src.ui.ui_sensor import Ui_Sensor
-from src.utils.helpers import Bridge
+from src.utils.helpers import Bridge, PrintStream
 
 
 RAD_TO_DEG = 180.0 / np.pi
@@ -42,8 +43,10 @@ class Sensor(QWidget):
 
         # Populate available serial ports
         for serial_port in QSerialPortInfo.availablePorts():
-            self.ui.gpsSerial.addItem(f"{serial_port.portName()} - {serial_port.manufacturer()}")
-            self.ui.imuSerial.addItem(f"{serial_port.portName()} - {serial_port.manufacturer()}")
+            self.ui.gpsSerial.addItem(
+                f"{serial_port.portName()} - {serial_port.manufacturer()}")
+            self.ui.imuSerial.addItem(
+                f"{serial_port.portName()} - {serial_port.manufacturer()}")
 
         # Populate available ethernet interfaces
         for interface in QNetworkInterface.allInterfaces():
@@ -57,6 +60,10 @@ class Sensor(QWidget):
         self.error_timer = QTimer()
         self.error_timer.timeout.connect(self.check_error_queues)
         self.error_timer.start(1000)  # check every 1 second
+
+        self.printer = PrintStream(self.ui.outputScreen)
+        sys.stdout = self.printer
+        sys.stderr = self.printer
 
     @Slot()
     def on_next_clicked(self):
@@ -84,45 +91,55 @@ class Sensor(QWidget):
 
         output = process.readAllStandardOutput().data().decode()
         error = process.readAllStandardError().data().decode()
-        print("Output:", output)
-        print("Error:", error)
+        self.printer.print(f"Output: {output}", "blue")
+        self.printer.print(f"Error: {error}", "red")
 
     @Slot()
     def on_btnPtpd_clicked(self):
         ethernet_port = self.ui.ethernetPort.currentText()
         if not ethernet_port or ethernet_port == "None":
-            print("Ethernet port not selected.")
+            # self.printer.print(
+            # "Please select an ethernet port to start ptpd.", "red")
+            print("Please select an ethernet port to start ptpd.")
             return
 
         result = subprocess.run(
             ["pgrep", "ptpd"], capture_output=True, text=True)
         if result.stdout.strip():
-            print("ptpd is already running.")
+            self.printer.print(
+                "ptpd is already running.", "red")
             self.ui.btnPtpd.setEnabled(False)
             return
 
         command = f"echo '{self.mainWindow.password}' | sudo -S ptpd -M -i {ethernet_port}"
         subprocess.Popen(["bash", "-c", command])
         if not subprocess.run(["pgrep", "ptpd"], capture_output=True, text=True).stdout.strip():
-            print("Failed to start ptpd.")
+            self.printer.print(
+                "Failed to start ptpd. Please check your configuration.", "red")
             self.ui.btnPtpd.setEnabled(True)
         else:
-            print("ptpd started successfully.")
+            self.printer.print(
+                "ptpd started successfully.", "green")
             self.ui.btnPtpd.setEnabled(False)
 
     @Slot()
     def on_btnIPV4_clicked(self):
         ethernet_port = self.ui.ethernetPort.currentText()
         if not ethernet_port or ethernet_port == "None":
-            print("Ethernet port not selected.")
+            self.printer.print(
+                "Please select an ethernet port to set IP address.", "red")
             return
 
         if not shutil.which("ifconfig"):
-            print("ifconfig not installed.")
+            self.printer.print(
+                "ifconfig not installed. Please install net-tools.", "red")
+            QMessageBox.critical(
+                self, "Error", "ifconfig not installed. Please install net-tools.")
             return
 
         command = f"echo '{self.mainWindow.password}' | sudo -S ifconfig {ethernet_port} 192.168.1.100"
-        print(command)
+        self.printer.print(
+            f"Setting IP address for {ethernet_port} to 192.168.1.100", "blue")
         subprocess.Popen(["bash", "-c", command])
 
         # TODO: Once set, if it reverts automate the process. (Timer)
@@ -145,7 +162,6 @@ class Sensor(QWidget):
             except (ValueError, TypeError):
                 return ""
 
-            
         self.ui.systemTimeIMU.setPlainText(data.get("systemtime", ""))
         self.ui.TimeIMU.setPlainText(data.get("imutime", ""))
         self.ui.AccX.setPlainText(format_float(data.get("accX")))
@@ -154,9 +170,12 @@ class Sensor(QWidget):
         self.ui.gyroX.setPlainText(format_float(data.get("gyroX")))
         self.ui.gyroY.setPlainText(format_float(data.get("gyroY")))
         self.ui.gyroZ.setPlainText(format_float(data.get("gyroZ")))
-        self.ui.roll.setPlainText(format_float(data.get("roll"), radians_to_degrees=True))
-        self.ui.pitch.setPlainText(format_float(data.get("pitch"), radians_to_degrees=True))
-        self.ui.yaw.setPlainText(format_float(data.get("yaw"), radians_to_degrees=True))
+        self.ui.roll.setPlainText(format_float(
+            data.get("roll"), radians_to_degrees=True))
+        self.ui.pitch.setPlainText(format_float(
+            data.get("pitch"), radians_to_degrees=True))
+        self.ui.yaw.setPlainText(format_float(
+            data.get("yaw"), radians_to_degrees=True))
         self.ui.quatX.setPlainText(format_float(data.get("qX")))
         self.ui.quatY.setPlainText(format_float(data.get("qY")))
         self.ui.quatZ.setPlainText(format_float(data.get("qZ")))
@@ -174,7 +193,7 @@ class Sensor(QWidget):
                 return f"{val:.{precision}f}"
             except (ValueError, TypeError):
                 return ""
-            
+
         self.ui.systemTimeGPS.setPlainText(data.get("systemtime", ""))
         self.ui.GPSTime.setPlainText(data.get("gpstime", ""))
         self.ui.latitude.setPlainText(format_float(data.get("lat")))
@@ -269,7 +288,8 @@ class Sensor(QWidget):
                 self.gps_process.start()
 
             else:
-                print("Gps Type not found")
+                self.printer.print(
+                    "GPS Type not found", "red")
                 gps = False
 
         if imuport != "None" and imutype != "None" and imubaud != 0:
@@ -310,7 +330,8 @@ class Sensor(QWidget):
                 )
                 self.imu_process.start()
             else:
-                print("IMU Type not found")
+                self.printer.print(
+                    "IMU Type not found", "red")
                 imu = False
 
         if gps or imu:
@@ -321,17 +342,22 @@ class Sensor(QWidget):
     def on_serialTerminationButton_clicked(self):
         # Terminate GPS process
         if hasattr(self, "gps_process") and self.gps_process.is_alive():
-            print("Stopping GPS process...")
+            self.printer.print(
+                "Stopping GPS process...", "blue")
             self.gps_process.terminate()
             self.gps_process.join()
-            print("GPS process stopped.")
+            self.printer.print(
+                "GPS process stopped.", "green")
 
         # Terminate IMU process
         if hasattr(self, "imu_process") and self.imu_process.is_alive():
+            self.printer.print(
+                "Stopping IMU process...", "blue")
             print("Stopping IMU process...")
             self.imu_process.terminate()
             self.imu_process.join()
-            print("IMU process stopped.")
+            self.printer.print(
+                "IMU process stopped.", "green")
 
         # Clean up queues and bridges
         if hasattr(self, "gps_queue"):
@@ -353,8 +379,14 @@ class Sensor(QWidget):
     def check_error_queues(self):
         while not self.gps_error_queue.empty():
             err = self.gps_error_queue.get()
-            print(err)  # or show in UI
+            if "Serial port error" in err:
+                self.printer.print(err, "red")
+            else:
+                self.printer.print(err, "orange")
 
         while not self.imu_error_queue.empty():
             err = self.imu_error_queue.get()
-            print(err)  # or show in UI
+            if "Serial port error" in err:
+                self.printer.print(err, "red")
+            else:
+                self.printer.print(err, "orange")

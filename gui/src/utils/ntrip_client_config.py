@@ -44,7 +44,7 @@ class NtripClientConfig(QDialog):
         sourcetable = self.ui.sourcetable.currentText()
         self.settings = {"server": host, "port": port, "ntripuser": username,
                          "ntrippassword": password, "https": https, "datatype": datatype,
-                         "version": version, "ggainterval": ggainterval, "mountpoint": sourcetable, "https": https}
+                         "version": version, "ggainterval": ggainterval, "mountpoint": sourcetable}
 
         # You could do basic validation here
         if not host or not sourcetable:

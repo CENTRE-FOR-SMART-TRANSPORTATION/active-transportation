@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
         QMessageBox.about(self, "Active Transportation Recording",
                           "This is a GUI Program to record GPS and IMU data with ease.\n"
                           "Currently running version 1.0.0.\n"
-                          "Credits: Krupal Shah, Jaspreet Singh Chhabra")
+                          "Credits: Krupal Shah")
 
     def set_pandarview_path(self):
         directory = QFileDialog.getExistingDirectory(
