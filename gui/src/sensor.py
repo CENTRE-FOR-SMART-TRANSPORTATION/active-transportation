@@ -62,8 +62,8 @@ class Sensor(QWidget):
         self.error_timer.start(1000)  # check every 1 second
 
         self.printer = PrintStream(self.ui.outputScreen)
-        sys.stdout = self.printer
-        sys.stderr = self.printer
+        # sys.stdout = self.printer
+        # sys.stderr = self.printer
 
     @Slot()
     def on_next_clicked(self):
@@ -98,9 +98,8 @@ class Sensor(QWidget):
     def on_btnPtpd_clicked(self):
         ethernet_port = self.ui.ethernetPort.currentText()
         if not ethernet_port or ethernet_port == "None":
-            # self.printer.print(
-            # "Please select an ethernet port to start ptpd.", "red")
-            print("Please select an ethernet port to start ptpd.")
+            self.printer.print(
+                "Please select an ethernet port to start ptpd.", "red")
             return
 
         result = subprocess.run(

@@ -38,8 +38,5 @@ class PrintStream(QObject):
 
     def append_text(self, message, color):
         # Wrap text in HTML span with color
-        print("append_text", message, color)
         html = f'<span style="color:{color};">{message}</span><br>'
-        self.text_browser.moveCursor(Qt.TextCursor.End)
         self.text_browser.insertHtml(html)
-        self.text_browser.moveCursor(Qt.TextCursor.End)
