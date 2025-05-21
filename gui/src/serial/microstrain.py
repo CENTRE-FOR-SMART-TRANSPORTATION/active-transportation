@@ -1,10 +1,10 @@
 import os
 import sys
-import mscl
 import time
+import mscl
 import datetime
 import threading
-import datatypes as dt
+import src.serial.datatypes as dt
 
 from queue import Queue, Empty
 from PySide6.QtCore import QObject, QThread

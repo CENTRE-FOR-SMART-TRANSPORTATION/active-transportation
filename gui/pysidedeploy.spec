@@ -1,20 +1,20 @@
 [app]
-title = Active Transportation
+title = activetransportation
 project_dir = .
-input_file = /home/krupal/Documents/projects/active_transportation/active-transportation/gui/main.py
+input_file = main.py
 project_file = gui.pyproject
-exec_directory = release/activetransportation/usr/bin
+exec_directory = releases/activetransportation/usr/bin
 icon = assets/icon.png
 
 [python]
-python_path = /home/krupal/Documents/projects/active_transportation/active-transportation/gui/venv/bin/python3.10
+python_path = venv/bin/python3.10
 packages = Nuitka
 android_packages = 
 
 [qt]
 qml_files = 
 excluded_qml_plugins = 
-modules = Core,Gui,Network,Bluetooth,Widgets,SerialPort,DBus
+modules = Core,Widgets,DBus,SerialPort,Gui,Network,Bluetooth
 plugins = styles,iconengines,egldeviceintegrations,accessiblebridge,imageformats,platformthemes,platforminputcontexts,generic,xcbglintegrations,platforms
 
 [android]

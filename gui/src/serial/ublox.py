@@ -3,7 +3,7 @@ import time
 import serial
 import threading
 import numpy as np
-import datatypes as dt
+import src.serial.datatypes as dt
 
 from pyubx2 import UBXReader
 from queue import Queue, Empty

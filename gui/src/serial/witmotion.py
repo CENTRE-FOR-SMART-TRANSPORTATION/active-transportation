@@ -5,7 +5,7 @@ import struct
 import datetime
 import threading
 import numpy as np
-import datatypes as dt
+import src.serial.datatypes as dt
 
 from queue import Queue, Empty
 from PySide6.QtCore import QObject
