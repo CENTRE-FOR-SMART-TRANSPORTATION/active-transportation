@@ -24,6 +24,7 @@ class Bluetooth(QObject):
         self.available_devices = {}  # {address: {'name': name, 'info': QBluetoothDeviceInfo}}
 
         self.connected_service_info = None
+        self.save = False
 
     def scan(self):
         self.available_devices.clear()
@@ -31,8 +32,12 @@ class Bluetooth(QObject):
 
     @Slot(QBluetoothDeviceInfo)
     def _on_device_discovered(self, info: QBluetoothDeviceInfo):
+        if info.majorDeviceClass() == info.MajorDeviceClass.MiscellaneousDevice:
+            return
         address = info.address().toString()
         name = info.name()
+        if not name:
+            return
         self.available_devices[address] = {'name': name, 'info': info}
 
     def connect(self, address_str: str):
@@ -63,7 +68,8 @@ class Bluetooth(QObject):
         self.socket = QBluetoothSocket(QBluetoothServiceInfo.RfcommProtocol)
         self.socket.connected.connect(
             lambda: self.connectionStatus.emit("Connected"))
-        self.socket.readyRead.connect(self._read_socket_data)
+        self.socket.readyRead.connect(
+            lambda: self.connectionStatus.emit("Ready"))
         self.socket.errorOccurred.connect(lambda err: self.connectionStatus.emit(
             f"Socket error: {self.socket.errorString()}"))
 

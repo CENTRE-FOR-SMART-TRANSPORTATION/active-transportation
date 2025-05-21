@@ -17,8 +17,9 @@ DEG_TO_RAD = np.pi / 180
 class WitMotion(QObject):
     def __init__(self, **kwargs):
         super().__init__()
-        self.imu_port = kwargs.get("imu_port", "/dev/ttyACM0")
+        self.imu_port = kwargs.get("imu_port", None)
         self.baud_rate = kwargs.get("baud_rate", 115200)
+        self.socket = kwargs.get("socket", None)
         self.save_data = kwargs.get("save_data", False)
         self.save_path = kwargs.get("save_path", None)
         self.imu_queue = kwargs.get("imu_queue", None)
@@ -65,8 +66,14 @@ class WitMotion(QObject):
     def start(self):
         try:
             """Start reading from the IMU"""
-            self.serial = serial.Serial(
-                self.imu_port, self.baud_rate, timeout=1)
+            if self.imu_port:
+                self.serial = serial.Serial(
+                    self.imu_port, self.baud_rate, timeout=1)
+            elif self.socket:
+                pass
+            else:
+                raise ValueError("No valid IMU port or socket provided")
+
             self.running = True
 
             self._raw_data_thread = threading.Thread(target=self._read_raw)
@@ -108,19 +115,29 @@ class WitMotion(QObject):
             self.serial.close()
 
     def _read_raw(self):
-        count = 0
-        while self.running:
-            try:
-                if count == 0:
-                    # Try reading fixed packet size
-                    data = self.serial.read_until(b"U")
-                    count += 1
-                else:
-                    data = self.serial.read(11)
-                if data and len(data) > 10:
-                    self._rawbuffer.put(data)
-            except Exception as e:
-                print(f"IMU Read Error: {e}")
+        if self.imu_port is not None:
+            count = 0
+            while self.running:
+                try:
+                    if count == 0:
+                        # Try reading fixed packet size
+                        data = self.serial.read_until(b"U")
+                        count += 1
+                    else:
+                        data = self.serial.read(11)
+                    if data and len(data) > 10:
+                        self._rawbuffer.put(data)
+                except Exception as e:
+                    print(f"IMU Read Error: {e}")
+
+        elif self.socket is not None:
+            while self.running:
+                try:
+                    data = self.socket.readData(11)
+                    if data and len(data) > 10:
+                        self._rawbuffer.put(data)
+                except Exception as e:
+                    print(f"Socket Read Error: {e}")
 
     def _parse_sensor_data(self):
         """Read and process an IMU packet"""
