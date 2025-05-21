@@ -4,8 +4,9 @@ import mscl
 import time
 import datetime
 import threading
+import datatypes as dt
+
 from queue import Queue, Empty
-import src.serial.datatypes as dt
 from PySide6.QtCore import QObject, QThread
 
 
@@ -19,7 +20,6 @@ class Microstrain(QObject):
         self.imu_queue = kwargs.get("imu_queue", None)
         self.imu_error_queue = kwargs.get("imu_error_queue", None)
         self.display_timer = kwargs.get("display_timer", 1)
-
 
         self.running = False
         self.connection = None
@@ -61,7 +61,7 @@ class Microstrain(QObject):
                 if self.imu_error_queue is not None:
                     self.imu_error_queue.put(
                         f"Error opening file for writing: {e}")
-            
+
         self.start()
 
     def start(self):
@@ -94,7 +94,6 @@ class Microstrain(QObject):
                     self.imu_queue.put(self._last_data)
                     time.sleep(self.display_timer)
 
-
         except mscl.Error as e:
             print(f"Error connecting to Microstrain device: {e}")
             if self.imu_error_queue is not None:
@@ -115,7 +114,7 @@ class Microstrain(QObject):
         if isinstance(self.connection, mscl.Connection):
             try:
                 self.connection.disconnect()
-                
+
                 print("Connection closed.")
             except mscl.Error as e:
                 print(f"Error closing connection: {e}")
@@ -265,7 +264,6 @@ class Microstrain(QObject):
             # Write any remaining data in the batch when the thread stops
             if data_batch:
                 f.write("\n".join(data_batch) + "\n")
-
 
 
 if __name__ == "__main__":

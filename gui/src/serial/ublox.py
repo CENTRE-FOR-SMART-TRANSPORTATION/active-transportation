@@ -3,13 +3,14 @@ import time
 import serial
 import threading
 import numpy as np
+import datatypes as dt
+
 from pyubx2 import UBXReader
 from queue import Queue, Empty
-import src.serial.datatypes as dt
 from pygnssutils import GNSSNTRIPClient
+from PySide6.QtCore import QObject, QThread
 from datetime import datetime, timezone, date
 from scipy.spatial.transform import Rotation as R
-from PySide6.QtCore import QObject, QTimer, QThread
 
 GPS_EPOCH = datetime(1980, 1, 6)
 GPS_UTC_OFFSET = 18
@@ -47,7 +48,6 @@ class Ublox(QObject):
         self.gps_queue = kwargs.get("gps_queue", None)
         self.gps_error_queue = kwargs.get("gps_error_queue", None)
         self.display_timer = kwargs.get("display_timer", 1)
-
 
         self.template = {**dt.time_template, **dt.gps_template}
         if self.fusion:
@@ -187,12 +187,12 @@ class Ublox(QObject):
                 if self.gps_error_queue:
                     self.gps_error_queue.put(f"GPS Read Error: {e}")
 
-
     def _read_ntrip(self):
         while self.running:
             try:
                 # Block for a short time waiting for data (non-busy loop)
-                raw_data = self._ntripbuffer.get(timeout=1)  # Blocking read, 1s timeout
+                raw_data = self._ntripbuffer.get(
+                    timeout=1)  # Blocking read, 1s timeout
                 self._serial.write(raw_data[0])
             except Empty:
                 continue  # No data this second, just keep looping
@@ -338,11 +338,11 @@ class Ublox(QObject):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
                     if (self._ntrip_client is None and
-                        self.ntrip_details['start'] and
-                        not self._last_data['lat'] == '' and
-                        not self._last_data['lon'] == '' and
-                        self._last_data['fix'] > 0
-                        ):
+                            self.ntrip_details['start'] and
+                            not self._last_data['lat'] == '' and
+                            not self._last_data['lon'] == '' and
+                            self._last_data['fix'] > 0
+                            ):
                         print('STARTING NTRIP client')
                         self._start_ntrip_thread()
 

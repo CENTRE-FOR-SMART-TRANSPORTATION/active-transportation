@@ -83,3 +83,5 @@ CMakeLists.txt.user*
 __pycache__/
 *.vscode/
 gui.pyproject.user
+
+/venv/

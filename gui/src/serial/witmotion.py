@@ -5,9 +5,10 @@ import struct
 import datetime
 import threading
 import numpy as np
+import datatypes as dt
+
 from queue import Queue, Empty
-import src.serial.datatypes as dt
-from PySide6.QtCore import QObject, QTimer
+from PySide6.QtCore import QObject
 
 
 GRAVITY = 9.80665  # m/s²
