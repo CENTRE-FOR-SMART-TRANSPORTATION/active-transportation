@@ -18,6 +18,7 @@ from src.serial.ublox import Ublox
 from src.ui.ui_sensor import Ui_Sensor
 from src.utils.helpers import Bridge, PrintStream
 from src.utils.bluetooth import Bluetooth
+from PySide6.QtGui import QStandardItem, QStandardItemModel
 
 
 RAD_TO_DEG = 180.0 / np.pi
@@ -30,11 +31,12 @@ class Sensor(QWidget):
         self.ui.setupUi(self)
         self.mainWindow = mainWindow  # reference to the main window
         self.bluetooth = Bluetooth(self)
-        # self.bluetooth.dataReceived.connect(
+        #self.bluetooth.dataReceived.connect(self.handle_received_data)
         # self.mainWindow.displayBluetoothData)
         self.bluetooth.connectionStatus.connect(
             self.bleConnectionStatus)
         self.bluetooth.scan()
+        #self.raw_queue() = Queue
 
         # Set initial values
         self.ui.gpsSerial.addItem("None")
@@ -63,6 +65,7 @@ class Sensor(QWidget):
 
         self.gps_error_queue = Queue()
         self.imu_error_queue = Queue()
+        self.imu_queue = Queue()
 
         self.error_timer = QTimer()
         self.error_timer.timeout.connect(self.check_error_queues)
@@ -405,23 +408,27 @@ class Sensor(QWidget):
         self.printer.print(status, "blue")
         if status == "Scan Finished":
             self.ui.bleDevice.clear()
-            for address, device in self.bluetooth.available_devices.items():
+            for address, device in self.bluetooth.devices.items():
+                #print(address,device)
                 self.ui.bleDevice.addItem(
-                    f"{device['name']} - {address}")
+                    f"{device.name()} - {address}")
         elif "not found" in status:
             self.printer.print(status, "red")
         elif "Connected" in status:
             self.printer.print("Bluetooth connection established.", "green")
             self.printer.print(
-                f"{self.bluetooth.connected_service_info.serviceName()} service found.", "green")
+                f"{self.bluetooth.current_service_info.serviceName()} service found.", "green")
             currentTime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             recording_path = os.path.join(
                 self.mainWindow.recording_path, currentTime)
+            self.imu_queue = Queue()
+            self.imu_bridge = Bridge(self.imu_queue)
+            self.imu_bridge.lastData.connect(self.displayIMUData)
 
             self.imu_process = Process(
                 target=WitMotion,
                 kwargs={
-                    "socket": self.bluetooth.socket,
+                    "socket": self.bluetooth.raw_queue,
                     "save_data": self.bluetooth.save,
                     "save_path": recording_path,
                     "imu_queue": self.imu_queue,
@@ -430,6 +437,7 @@ class Sensor(QWidget):
 
                 }
             )
+            self.imu_process.start()
 
     @Slot()
     def on_BLEConnectionButton_clicked(self):
@@ -440,14 +448,49 @@ class Sensor(QWidget):
             self.printer.print("Please select a Bluetooth device.", "red")
             return
 
-        address = selected_device.split('-')[1].strip()
+        address = selected_device.split('-')[2].strip()
+        print(address)
         self.bluetooth.connect(address)
         self.bluetooth.save = save
+        self.ui.BLETerminationButton.setEnabled(True)
+        self.ui.BLEConnectionButton.setEnabled(False)
+        self.ui.serialConnectionButton.setEnabled(False)
+        self.ui.serialTerminationButton.setEnabled(False)
+
 
     @Slot()
     def on_BLETerminationButton_clicked(self):
         if hasattr(self.bluetooth, "socket") and self.bluetooth.socket.isOpen():
-            self.bluetooth.socket.close()
+            print('Disconnecting Bluetooth')
+            self.bluetooth.disconnect()
+            if hasattr(self, "imu_process") and self.imu_process.is_alive():
+                self.printer.print(
+                    "Stopping IMU process...", "blue")
+                print("Stopping IMU process...")
+                self.imu_process.terminate()
+                self.imu_process.join()
+                self.printer.print(
+                    "IMU process stopped.", "green")
+
+            if hasattr(self, "imu_queue"):
+                self.imu_queue.close()
+                self.imu_queue.join_thread()
+
+            if hasattr(self, "imu_bridge"):
+                self.imu_bridge.deleteLater()
+
             self.printer.print("Bluetooth connection closed.", "green")
         else:
             self.printer.print("No Bluetooth connection to close.", "red")
+
+        self.ui.BLETerminationButton.setEnabled(False)
+        self.ui.BLEConnectionButton.setEnabled(True)
+        self.ui.serialConnectionButton.setEnabled(True)
+        self.ui.serialTerminationButton.setEnabled(True)
+    # @Slot(str)
+    # def handle_received_data(self, data: str):
+    #     # Push raw string to the queue
+    #     if self.raw_queue:
+    #         self.raw_queue.put(data)
+
+
