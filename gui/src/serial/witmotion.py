@@ -76,9 +76,16 @@ class WitMotion(QObject):
                 raise ValueError("No valid IMU port or socket provided")
 
             self.running = True
-
-            self._raw_data_thread = threading.Thread(target=self._read_raw)
-            self._raw_data_thread.start()
+            
+            if self.imu_port is not None:
+                self._raw_data_thread = threading.Thread(target=self._read_raw)
+                self._raw_data_thread.start()
+            # else:
+            #     self.socket.readyRead.connect(self._read_socket_data)
+            elif self.socket is not None:
+                print('socket ready')
+                self._raw_data_thread = threading.Thread(target=self._read_raw)
+                self._raw_data_thread.start()
 
             self._parse_thread = threading.Thread(
                 target=self._parse_sensor_data)
@@ -91,6 +98,7 @@ class WitMotion(QObject):
 
             if self.imu_queue is not None:
                 while True:
+                    print("Sending data", self._last_data)
                     self.imu_queue.put(self._last_data)
                     time.sleep(self.display_timer)
 
@@ -98,6 +106,11 @@ class WitMotion(QObject):
             print(f"Serial port error: {e}")
             if self.imu_error_queue is not None:
                 self.imu_error_queue.put(f"Serial port error: {e}")
+        
+    def _read_socket_data(self):
+        self._raw_data_thread = threading.Thread(target=self._read_raw)
+        self._raw_data_thread.start()
+
 
     def stop(self):
         """Stop reading from the IMU"""
@@ -123,6 +136,7 @@ class WitMotion(QObject):
                     if count == 0:
                         # Try reading fixed packet size
                         data = self.serial.read_until(b"U")
+                        # data = self.serial.read(10`)
                         count += 1
                     else:
                         data = self.serial.read(11)
@@ -130,15 +144,18 @@ class WitMotion(QObject):
                         self._rawbuffer.put(data)
                 except Exception as e:
                     print(f"IMU Read Error: {e}")
-
         elif self.socket is not None:
             while self.running:
                 try:
-                    data = self.socket.readData(11)
+                    data = self.socket.get(timeout=1)  # This is a multiprocessing.Queue
                     if data and len(data) > 10:
                         self._rawbuffer.put(data)
+                except Empty:
+                    print('EMPTY QUEUE')
+                    continue
                 except Exception as e:
-                    print(f"Socket Read Error: {e}")
+                    print(f"Queue Read Error: {e}")
+
 
     def _parse_sensor_data(self):
         """Read and process an IMU packet"""
@@ -147,7 +164,6 @@ class WitMotion(QObject):
             """Generic function to parse IMU sensor data"""
             if len(data) < expected_length or data[0] != expected_cmd:
                 return None
-            # print(data)
             return np.array(struct.unpack("<hhh", data[1:7])) / 32768.0 * scale_factor
 
         def _get_time(data):
@@ -225,7 +241,6 @@ class WitMotion(QObject):
                         self._current_data.update(
                             dict(zip(data_keys[key], result)))
 
-                # print(self._current_data)
                 if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
@@ -235,6 +250,8 @@ class WitMotion(QObject):
 
                     if self.save_data:
                         self._filebuffer.put(self._last_data)
+
+                    
 
             except Exception as e:
                 print(f"IMU Read Error: {e!r}")
@@ -272,7 +289,7 @@ class WitMotion(QObject):
 
 
 if __name__ == "__main__":
-    imu = WitMotion(imu_port='/dev/ttyUSB0', baud_rate=115200,
+    imu = WitMotion(imu_port=None, baud_rate=115200,
                     save_data=True, save_path="test")
     imu.start()
     try:

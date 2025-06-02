@@ -156,17 +156,17 @@ class Microstrain(QObject):
                     orientQuaternion: [0.778182,0.00312887,0.012527,-0.627906] 
                     scaledGyroX: -0.001219 scaledGyroY: 0.000571 scaledGyroZ: 0.000751
                     """
+
                     now = datetime.datetime.now()
                     epoch_time = now.timestamp() * 1000
                     formatted_time = now.strftime("%Y-%m-%d %H:%M:%S.%f")
-
                     self._raw_data.update(
                         {"systemepoch": epoch_time, "systemtime": formatted_time})
 
                     for dataPoint in packet.data():
                         self._raw_data[dataPoint.channelName(
                         )] = dataPoint.as_string()
-
+                        print(f"{dataPoint.channelName()} = {dataPoint.as_string()}")
                     # Add the raw data to the queue
                     self._rawbuffer.put(self._raw_data.copy())
                     self._raw_data.clear()
@@ -184,7 +184,6 @@ class Microstrain(QObject):
             try:
                 if not self._rawbuffer.empty():
                     raw_data = self._rawbuffer.get(timeout=1)
-
                     # Direct field mappings
                     self._current_data.update({
                         "systemtime": raw_data.get("systemtime"),
