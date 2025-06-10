@@ -16,7 +16,6 @@ class Bluetooth(QObject):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
         self.local_device = QBluetoothLocalDevice()
         self.device_agent = QBluetoothDeviceDiscoveryAgent()
         self.service_agent = None
@@ -27,7 +26,6 @@ class Bluetooth(QObject):
 
         self.device_agent.deviceDiscovered.connect(self._on_device_discovered)
         #self.device_agent.finished.connect(lambda: self.scanFinished.emit())
-
         self.device_agent.finished.connect(
             lambda: self.connectionStatus.emit("Scan Finished"))
 
@@ -41,17 +39,10 @@ class Bluetooth(QObject):
         name = info.name() or "(unknown)"
         label = f"{address} {name}"
         self.devices[address] = info
-        
-        
-
         pairing = self.local_device.pairingStatus(info.address())
         color = QColor(Qt.green if pairing in (
             QBluetoothLocalDevice.Paired, QBluetoothLocalDevice.AuthorizedPaired) else Qt.black)
-
         self.deviceFound.emit(label, color)
-
-    
-
 
     def discover_services(self, address_str: str):
         if address_str not in self.devices:
@@ -61,7 +52,6 @@ class Bluetooth(QObject):
         local_device = QBluetoothLocalDevice()
         adapter_address = QBluetoothAddress(local_device.address())
         address = QBluetoothAddress(address_str)
-        
         self.service_agent = QBluetoothServiceDiscoveryAgent(adapter_address)
         self.service_agent.setRemoteAddress(address)
         self.service_agent.serviceDiscovered.connect(self._on_service_discovered)
@@ -74,7 +64,6 @@ class Bluetooth(QObject):
         if info.serviceName():
             self.current_service_info = info
             print('hiii', info.serviceName())
-
 
     @Slot()
     def _on_service_discovery_finished(self):
@@ -91,14 +80,12 @@ class Bluetooth(QObject):
 
         self.socket.connectToService(self.current_service_info)
 
-   
     @Slot()
     def _read_socket_data(self):
         set_ = True
         while self.socket and self.socket.canReadLine():
             try:
                 if set_:
-                    # Keep reading one byte at a time until we find the sync byte (0x55 or b'U')
                     while True:
                         q = self.socket.read(1)
                         if not q:
@@ -108,8 +95,7 @@ class Bluetooth(QObject):
                             break
                 packet = self.socket.read(11)
                 if len(packet) > 10:
-                    
-                        self.raw_queue.put(packet.data())
+                    self.raw_queue.put(packet.data())
                 else:
                     print("Incomplete packet, resetting sync...")
                     set_ = True  # always reset to look for sync again

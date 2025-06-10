@@ -244,15 +244,10 @@ class WitMotion(QObject):
                 if all(self._current_data.get(k) is not None for k in sum(data_keys.values(), [])):
                     self._last_data = self._current_data.copy()
                     self._current_data = self.template.copy()
-
                     self._last_data = {k: str(v) if isinstance(
                         v, (int, float)) else v for k, v in self._last_data.items()}
-
                     if self.save_data:
                         self._filebuffer.put(self._last_data)
-
-                    
-
             except Exception as e:
                 print(f"IMU Read Error: {e!r}")
 
@@ -299,3 +294,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         imu.stop()
         print("IMU stopped.")
+

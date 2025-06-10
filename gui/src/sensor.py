@@ -492,4 +492,3 @@ class Sensor(QWidget):
     #     # Push raw string to the queue
     #     if self.raw_queue:
     #         self.raw_queue.put(data)
-
