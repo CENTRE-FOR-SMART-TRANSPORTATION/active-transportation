@@ -118,12 +118,6 @@ class Bluetooth(QObject):
                 print(f"Socket Read Error: {e}")
                 set_ = True  # Reset sync on error
 
-  
-
-
-
-
-
     def disconnect(self):
         if self.socket:
             self.socket.disconnectFromService()

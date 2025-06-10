@@ -85,7 +85,7 @@ class Ublox(QObject):
             try:
                 os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
                 with open(self.save_path, "w") as f:
-                    f.write(",".join(self._current_data.keys()) + "\n")
+                    f.write(",".join({**self._current_data, **self._status, **self._calib_status}.keys()) + "\n")
             except Exception as e:
                 print(f"Error opening file for writing: {e}")
                 self.save_data = False
@@ -311,7 +311,10 @@ class Ublox(QObject):
                             "sep": parsed_data.sep,
                             "fix": parsed_data.quality,
                             "sip": parsed_data.numSV,
-                            "hdop": parsed_data.HDOP,
+                        })
+                        
+                        self._status.update({
+                            "HDOP": parsed_data.HDOP,
                             "diffage": parsed_data.diffAge,
                             "diffstation": parsed_data.diffStation
                         })
@@ -334,15 +337,16 @@ class Ublox(QObject):
                             "2D vAcc": parsed_data.vAcc / 1000,  # m
                         })
 
-                if all(self._current_data.get(k) is not None for k in self._current_data.keys()):
-                    self._last_data = self._current_data.copy()
+                required_keys = ["systemtime", "gpstime", "lat", "lon", "alt", "fix"]
+                if all(self._current_data.get(k) is not None for k in required_keys):
+                    self._last_data = {**self._current_data.copy(), **self._status.copy(), **self._calib_status.copy()}
                     self._current_data = self.template.copy()
                     if (self._ntrip_client is None and
                             self.ntrip_details['start'] and
                             not self._last_data['lat'] == '' and
                             not self._last_data['lon'] == '' and
                             self._last_data['fix'] > 0
-                            ):
+                        ):
                         print('STARTING NTRIP client')
                         self._start_ntrip_thread()
 

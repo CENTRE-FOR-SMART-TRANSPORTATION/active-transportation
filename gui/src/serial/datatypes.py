@@ -13,12 +13,6 @@ gps_template = {
     "sep": None,    # Geoid separation: difference between ellipsoid and mean sea level
     "fix": None,
     "sip": None,    # number of satellites in view
-    "hdop": None,
-    "diffage": None,
-    "diffstation": None,
-    "2D hAcc": None,
-    "2D vAcc": None,
-    "3D Acc": None,
 }
 
 imu_template = {
@@ -26,7 +20,7 @@ imu_template = {
     "roll": None,       # Angles (in radians)
     "pitch": None,
     "yaw": None,
-    "accX": None,       # Acceleration without gravity (in m/s^2)
+    "accX": None,       # Acceleration in g
     "accY": None,
     "accZ": None,
     "gyroX": None,      # Angular velocity (in rad/s)
@@ -39,6 +33,11 @@ imu_template = {
 }
 
 status_template = {
+    "diffage": None,
+    "diffstation": None,
+    "2D hAcc": None,
+    "2D vAcc": None,
+    "3D Acc": None,
     "fusionMode": 0,
     "imuStatus": 0,
     "gpsFix": 0,
