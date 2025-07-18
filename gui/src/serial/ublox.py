@@ -99,7 +99,7 @@ class Ublox(QObject):
         try:
             self._serial = serial.Serial(
                 self.gps_port, self.baud_rate, timeout=1)
-            self._sbf_reader = SBFReader(self._serial, quitonerror=0)
+            self._sbf_reader = SBFReader(self._serial)
             self._ubr = UBXReader(self._serial, protfilter=3,
                                   errorhandler=self._sbf_reader)
 
@@ -364,28 +364,44 @@ class Ublox(QObject):
                             "2D vAcc": parsed_data.vAcc / 1000,  # m
                         })
 
-                    elif msg_type in ["PosCovCartesian"]:
-                        cov_xx = parsed_data.Cov_xx
-                        cov_yy = parsed_data.Cov_yy
-                        cov_zz = parsed_data.Cov_zz
-
-                        # Check for valid variances
-                        if any(cov < 0 for cov in [cov_xx, cov_yy, cov_zz]):
-                            hacc_2d, vacc_2d, acc_3d = 0.0, 0.0, 0.0
-                        else:
-                            hacc_2d = 2 * math.sqrt(cov_xx + cov_yy)
-                            vacc_2d = 2 * math.sqrt(cov_zz)
-                            acc_3d = 2 * math.sqrt(cov_xx + cov_yy + cov_zz)
-
+                    elif msg_type in ["PosCovGeodetic"]:
+                        # print(parsed_data)
+                        cov_latlat = parsed_data.Cov_latlat
+                        cov_lonlon = parsed_data.Cov_lonlon
+                        cov_altalt = parsed_data.Cov_hgthgt
+                        d2acc = 2 * math.sqrt(cov_latlat + cov_lonlon)
+                        d3acc = 2 * \
+                            math.sqrt(cov_latlat + cov_lonlon + cov_altalt)
                         self._status.update({
-                            "2D hAcc": hacc_2d,  # m
-                            "2D vAcc": vacc_2d,  # m
-                            "3D Acc": acc_3d,    # m
+                            "2D hAcc": d2acc,  # m
+                            # "2D vAcc": parsed_data.VAccuracy / 100,  # m
+                            "3D Acc": d3acc,  # m
                         })
+                        # cov_xx = parsed_data.Cov_xx
+                        # cov_yy = parsed_data.Cov_yy
+                        # cov_zz = parsed_data.Cov_zz
+                        # print(f"Covariance: {cov_xx}, {cov_yy}, {cov_zz}")
+                        # # Check for valid variances
+                        # if any(cov < 0 for cov in [cov_xx, cov_yy, cov_zz]):
+                        #     hacc_2d, vacc_2d, acc_3d = 0.0, 0.0, 0.0
+                        # else:
+                        #     hacc_2d = 2 * math.sqrt(cov_xx + cov_yy)
+                        #     vacc_2d = 2 * math.sqrt(cov_zz)
+                        #     acc_3d = 2 * math.sqrt(cov_xx + cov_yy + cov_zz)
+
+                        # hacc = parsed_data.HAccuracy / 100  # m
+                        # vacc = parsed_data.VAccuracy / 100
+                        # acc = math.sqrt(parsed_data.HAccuracy **
+                        #                 2 + parsed_data.VAccuracy**2) / 100
+                        # self._status.update({
+                        #     "2D hAcc": hacc,  # m
+                        #     "2D vAcc": vacc,  # m
+                        #     "3D Acc": acc,  # m
+                        # })
 
                     # else:
-                        # print(f"Unknown message type: {msg_type}")
-                        # print(f"Data: {parsed_data}")
+                    #     print(f"Unknown message type: {msg_type}")
+                    #     print(f"Data: {parsed_data}")
 
                 required_keys = ["systemtime", "gpstime",
                                  "lat", "lon", "alt", "fix"]
@@ -394,10 +410,10 @@ class Ublox(QObject):
                         **self._current_data.copy(), **self._status.copy(), **self._calib_status.copy()}
                     self._current_data = self.template.copy()
                     if (self._ntrip_client is None and
-                        self.ntrip_details['start'] and
-                        not self._last_data['lat'] == '' and
-                        not self._last_data['lon'] == '' and
-                        self._last_data['fix'] > 0
+                            self.ntrip_details['start'] and
+                            not self._last_data['lat'] == '' and
+                            not self._last_data['lon'] == '' and
+                            self._last_data['fix'] > 0
                         ):
                         print('STARTING NTRIP client')
                         self._start_ntrip_thread()
