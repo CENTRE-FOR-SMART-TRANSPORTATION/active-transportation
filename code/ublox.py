@@ -1,12 +1,16 @@
 import os
 import time
+import math
 import serial
 import threading
 import numpy as np
+import src.serial.datatypes as dt
+
 from pyubx2 import UBXReader
+from pysbf2 import SBFReader
 from queue import Queue, Empty
-import datatypes as dt
 from pygnssutils import GNSSNTRIPClient
+from PySide6.QtCore import QObject, QThread
 from datetime import datetime, timezone, date
 from scipy.spatial.transform import Rotation as R
 
@@ -29,21 +33,12 @@ GNSS_FIX_FLAGS = {
     4: "GNSS + Dead Reckoning",
     5: "Time only",
 }
-NTRIP_DETAILS = {
-    "start": False,         # Keep it False
-    "server": None,
-    "port": None,
-    "mountpoint": None,
-    "datatype": "RTCM",
-    "ntripuser": None,
-    "ntrippassword": None,
-    "version": 2,
-    "ggainterval": 1,
-}
 
 
-class Ublox():
+class Ublox(QObject):
     def __init__(self, **kwargs):
+        super().__init__()
+
         self._serial = None
         self.running = False
         self.gps_port = kwargs.get("gps_port", "/dev/ttyACM0")
@@ -51,7 +46,7 @@ class Ublox():
         self.fusion = kwargs.get("fusion", False)
         self.save_data = kwargs.get("save_data", False)
         self.save_path = kwargs.get("save_path", None)
-        self.ntrip = kwargs.get("ntrip", False)
+        self.ntrip_details = kwargs.get("ntrip_details", {"start": False})
         self.gps_queue = kwargs.get("gps_queue", None)
         self.gps_error_queue = kwargs.get("gps_error_queue", None)
         self.display_timer = kwargs.get("display_timer", 1)
@@ -79,10 +74,6 @@ class Ublox():
 
             self.save_path = full_path
 
-        if self.ntrip:
-            self.ntrip_details = NTRIP_DETAILS.copy()
-            self.ntrip_details['start'] = True
-
         self._rawbuffer = Queue()
         self._filebuffer = Queue()  # Use a queue for thread-safe data transfer
         self._ntripbuffer = Queue()
@@ -96,7 +87,8 @@ class Ublox():
             try:
                 os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
                 with open(self.save_path, "w") as f:
-                    f.write(",".join({**self._current_data, **self._status, **self._calib_status}.keys()) + "\n")
+                    f.write(",".join(
+                        {**self._current_data, **self._status, **self._calib_status}.keys()) + "\n")
             except Exception as e:
                 print(f"Error opening file for writing: {e}")
                 self.save_data = False
@@ -107,7 +99,9 @@ class Ublox():
         try:
             self._serial = serial.Serial(
                 self.gps_port, self.baud_rate, timeout=1)
-            self._ubr = UBXReader(self._serial, protfilter=7)
+            self._sbf_reader = SBFReader(self._serial)
+            self._ubr = UBXReader(self._serial, protfilter=3,
+                                  errorhandler=self._sbf_reader)
 
             self.running = True
 
@@ -127,10 +121,10 @@ class Ublox():
                 while True:
                     temp = {**self._last_data, **
                             self._status, **self._calib_status}
-                    temp = {k: str(v) if isinstance(
-                        v, (int, float)) else v for k, v in temp.items()}
                     temp['fix'] = FIX_FLAGS.get(
                         temp['fix'], "Unknown")
+                    temp = {k: str(v) if isinstance(
+                        v, (int, float)) else v for k, v in temp.items()}
 
                     self.gps_queue.put(temp)
                     time.sleep(self.display_timer)
@@ -191,7 +185,17 @@ class Ublox():
         while self.running:
             try:
                 if self._serial.in_waiting:
-                    _, parsed_data = self._ubr.read()
+                    try:
+                        _, parsed_data = self._ubr.read()
+                    except:
+                        # If UBXReader fails, try reading SBF data
+                        parsed_data = None
+                        if self._sbf_reader:
+                            try:
+                                _, parsed_data = self._sbf_reader.read()
+                            except Exception as e:
+                                print(f"SBF Read Error: {e}")
+                                parsed_data = None
                     self._rawbuffer.put(parsed_data)
             except Exception as e:
                 print(f"GPS Read Error: {e}")
@@ -226,9 +230,10 @@ class Ublox():
                             "VDOP": parsed_data.vAcc / 1000,    # m
                             "PDOP": parsed_data.pDOP / 1000,    # no unit
                             "numSV": parsed_data.numSV,
+                            "speed": parsed_data.gSpeed,
                         })
 
-                    if msg_type == "NAV-ATT":
+                    elif msg_type == "NAV-ATT":
                         roll = parsed_data.roll * DEG_TO_RAD
                         pitch = parsed_data.pitch * DEG_TO_RAD
                         yaw = parsed_data.heading * DEG_TO_RAD
@@ -292,8 +297,20 @@ class Ublox():
                             except AttributeError:
                                 print(
                                     f"Warning: Missing sensor data for index {i}")
+                    elif msg_type.endswith("HRP"):
+                        self._current_data.update({
+                            "azimuth": parsed_data.hdg,
+                            # "roll": parsed_data.roll,
+                            # "pitch": parsed_data.pitch,
+                        })
+                    elif msg_type.endswith("GSA"):
+                        self._status.update({
+                            "HDOP": parsed_data.HDOP,
+                            "VDOP": parsed_data.VDOP,
+                            "PDOP": parsed_data.PDOP,
+                        })
 
-                    elif msg_type in ["GNGGA", "GPGGA"]:
+                    elif msg_type.endswith("GGA"):
                         time_str = str(parsed_data.time)
                         if time_str.find(".") == -1:
                             time_str += ".000000"
@@ -323,7 +340,7 @@ class Ublox():
                             "fix": parsed_data.quality,
                             "sip": parsed_data.numSV,
                         })
-                        
+
                         self._status.update({
                             "HDOP": parsed_data.HDOP,
                             "diffage": parsed_data.diffAge,
@@ -338,19 +355,60 @@ class Ublox():
                         self._status['rtcm_msg'] = parsed_data.msgUsed
 
                     elif msg_type in ["NAV-HPPOSECEF"]:
-                        self._current_data.update({
+                        self._status.update({
                             "3D Acc": parsed_data.pAcc / 1000,  # m
                         })
 
                     elif msg_type in ["NAV-HPPOSLLH"]:
-                        self._current_data.update({
+                        self._status.update({
                             "2D hAcc": parsed_data.hAcc / 1000,  # m
                             "2D vAcc": parsed_data.vAcc / 1000,  # m
                         })
 
-                required_keys = ["systemtime", "gpstime", "lat", "lon", "alt", "fix"]
+                    elif msg_type in ["PosCovGeodetic"]:
+                        # print(parsed_data)
+                        cov_latlat = parsed_data.Cov_latlat
+                        cov_lonlon = parsed_data.Cov_lonlon
+                        cov_altalt = parsed_data.Cov_hgthgt
+                        d2acc = 2 * math.sqrt(cov_latlat + cov_lonlon)
+                        d3acc = 2 * \
+                            math.sqrt(cov_latlat + cov_lonlon + cov_altalt)
+                        self._status.update({
+                            "2D hAcc": d2acc,  # m
+                            # "2D vAcc": parsed_data.VAccuracy / 100,  # m
+                            "3D Acc": d3acc,  # m
+                        })
+                        # cov_xx = parsed_data.Cov_xx
+                        # cov_yy = parsed_data.Cov_yy
+                        # cov_zz = parsed_data.Cov_zz
+                        # print(f"Covariance: {cov_xx}, {cov_yy}, {cov_zz}")
+                        # # Check for valid variances
+                        # if any(cov < 0 for cov in [cov_xx, cov_yy, cov_zz]):
+                        #     hacc_2d, vacc_2d, acc_3d = 0.0, 0.0, 0.0
+                        # else:
+                        #     hacc_2d = 2 * math.sqrt(cov_xx + cov_yy)
+                        #     vacc_2d = 2 * math.sqrt(cov_zz)
+                        #     acc_3d = 2 * math.sqrt(cov_xx + cov_yy + cov_zz)
+
+                        # hacc = parsed_data.HAccuracy / 100  # m
+                        # vacc = parsed_data.VAccuracy / 100
+                        # acc = math.sqrt(parsed_data.HAccuracy **
+                        #                 2 + parsed_data.VAccuracy**2) / 100
+                        # self._status.update({
+                        #     "2D hAcc": hacc,  # m
+                        #     "2D vAcc": vacc,  # m
+                        #     "3D Acc": acc,  # m
+                        # })
+
+                    # else:
+                    #     print(f"Unknown message type: {msg_type}")
+                    #     print(f"Data: {parsed_data}")
+
+                required_keys = ["systemtime", "gpstime",
+                                 "lat", "lon", "alt", "fix"]
                 if all(self._current_data.get(k) is not None for k in required_keys):
-                    self._last_data = {**self._current_data.copy(), **self._status.copy(), **self._calib_status.copy()}
+                    self._last_data = {
+                        **self._current_data.copy(), **self._status.copy(), **self._calib_status.copy()}
                     self._current_data = self.template.copy()
                     if (self._ntrip_client is None and
                             self.ntrip_details['start'] and
@@ -412,3 +470,21 @@ class Ublox():
 
     def __del__(self):
         self.stop()
+
+
+if __name__ == "__main__":
+    gps_thread = QThread()
+    gps = Ublox(gps_port="/dev/ttyACM1", fusion=False,
+                save_data=True, save_path="test")
+    gps.moveToThread(gps_thread)
+    gps_thread.started.connect(gps.start)
+    gps_thread.start()
+    try:
+        while True:
+            print(gps.get_coordinates())
+            time.sleep(1)
+    except KeyboardInterrupt:
+        gps.stop()
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        gps.stop()
