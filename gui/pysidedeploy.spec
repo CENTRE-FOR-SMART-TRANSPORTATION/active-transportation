@@ -7,14 +7,14 @@ exec_directory = releases/activetransportation/usr/bin
 icon = assets/icon.png
 
 [python]
-python_path = venv/bin/python3.10
-packages = Nuitka
+python_path = venv/bin/python
+packages = Nuitka,numpy,scipy,pyserial,pyubx2,pysbf2,pygnssutils,mscl
 android_packages = 
 
 [qt]
 qml_files = 
 excluded_qml_plugins = 
-modules = Core,Widgets,DBus,SerialPort,Gui,Network,Bluetooth
+modules = Bluetooth,Core,DBus,Gui,Network,SerialPort,Widgets
 plugins = styles,iconengines,egldeviceintegrations,accessiblebridge,imageformats,platformthemes,platforminputcontexts,generic,xcbglintegrations,platforms
 
 [android]
@@ -23,8 +23,9 @@ wheel_shiboken =
 plugins = 
 
 [nuitka]
+mode = onefile
 macos.permissions = 
-extra_args = --quiet --noinclude-qt-translations
+extra_args = --quiet --noinclude-qt-translations --static-libpython=no --include-package=mscl --include-module=mscl._mscl --jobs=2
 
 [buildozer]
 mode = onefile

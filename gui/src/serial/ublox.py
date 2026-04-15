@@ -230,6 +230,7 @@ class Ublox(QObject):
                             "VDOP": parsed_data.vAcc / 1000,    # m
                             "PDOP": parsed_data.pDOP / 1000,    # no unit
                             "numSV": parsed_data.numSV,
+                            "speed": parsed_data.gSpeed,
                         })
 
                     elif msg_type == "NAV-ATT":

@@ -13,6 +13,7 @@ gps_template = {
     "sep": None,    # Geoid separation: difference between ellipsoid and mean sea level
     "fix": None,
     "sip": None,    # number of satellites in view
+    "speed": None,
 }
 
 imu_template = {
